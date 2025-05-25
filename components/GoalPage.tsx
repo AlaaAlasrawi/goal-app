@@ -36,10 +36,21 @@ const GoalPage = () => {
     button: {
       marginBottom: 24,
     },
-    goalItem: {
+    goalCard: {
+      padding: 16,
+      borderRadius: 12,
+      marginBottom: 12,
+      elevation: 3,
+      shadowColor: "#000",
+      shadowOffset: { width: 0, height: 2 },
+      shadowOpacity: 0.1,
+      shadowRadius: 4,
+      backgroundColor: theme.surface,
+    },
+    goalText: {
+      fontSize: 16,
+      fontWeight: "500",
       color: theme.text,
-      fontSize: 15,
-      paddingVertical: 4,
     },
   });
 
@@ -55,6 +66,8 @@ const GoalPage = () => {
           placeholder="e.g. Finish my project"
           mode="outlined"
           style={styles.input}
+          textColor={theme.text}
+          activeOutlineColor={theme.secondary}
         />
 
         <Button
@@ -68,9 +81,9 @@ const GoalPage = () => {
         </Button>
 
         {goals.map((goal, index) => (
-          <Text key={index} style={styles.goalItem}>
-            • {goal}
-          </Text>
+          <View key={index} style={styles.goalCard}>
+            <Text style={styles.goalText}>{goal}</Text>
+          </View>
         ))}
       </View>
     </ScrollView>

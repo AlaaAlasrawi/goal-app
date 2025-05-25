@@ -4,8 +4,8 @@ export const lightTheme = {
   surface: "#FFFFFF",
   primary: "#6200EE",
   onPrimary: "#FFFFFF",
-  secondary: "#03DAC6",
-  onSecondary: "#000000",
+  secondary: "#7C4DFF",
+  onSecondary: "#FFFFFF",
   error: "#B00020",
   onError: "#FFFFFF",
   text: "#000000",
@@ -18,15 +18,12 @@ export const darkTheme = {
   background: "#121212",
   surface: "#313338",
   primary: "#BB86FC",
-
   onPrimary: "#000000",
-  secondary: "#03DAC6",
-  onSecondary: "#000000",
+  secondary: "#7C4DFF",
+  onSecondary: "#FFFFFF",
   error: "#CF6679",
   onError: "#000000",
   text: "#FFFFFF",
   onBackground: "#FFFFFF",
   onSurface: "#FFFFFF",
 } as const;
-
-export type ThemeType = typeof lightTheme | typeof darkTheme;
