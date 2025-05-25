@@ -73,15 +73,7 @@ const GoalPage = () => {
           placeholder="e.g. Finish my project"
           mode="outlined"
           style={styles.input}
-          theme={{
-            colors: {
-              placeholder: colorTheme ? "#aaa" : "#666",
-              primary: theme.primary,
-            },
-          }}
-          outlineColor={colorTheme ? "#555" : "#ccc"}
           activeOutlineColor={theme.primary}
-          contentStyle={{ fontSize: 16, paddingVertical: 8 }}
           textColor={theme.text}
           placeholderTextColor={theme.placeholder}
         />

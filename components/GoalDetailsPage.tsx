@@ -35,7 +35,9 @@ const GoalDetailsPage = () => {
         />
       )}
 
-      <Text style={[styles.title, { color: theme.text }]}>{goal}</Text>
+      <Text style={[styles.title, { color: theme.text }]}>
+        Your Goal : {goal}
+      </Text>
 
       <TextInput
         mode="outlined"
@@ -48,11 +50,12 @@ const GoalDetailsPage = () => {
         theme={{
           colors: {
             text: theme.text,
-            placeholder: "#888",
             primary: theme.primary,
             background: theme.surface,
           },
         }}
+        textColor={theme.text}
+        placeholderTextColor={theme.placeholder}
       />
 
       <Button mode="contained" onPress={pickImage} buttonColor={theme.primary}>
