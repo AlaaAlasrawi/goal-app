@@ -15,7 +15,7 @@ import { RootStackParamList } from "../hooks/types";
 const GoalPage = () => {
   const [goals, setGoals] = useState<string[]>([]);
   const [input, setInput] = useState("");
-  const { theme, colorTheme } = useTheme();
+  const { theme } = useTheme();
   const navigation = useNavigation<NavigationProp<RootStackParamList>>();
 
   const handleAddGoal = () => {
@@ -68,10 +68,10 @@ const GoalPage = () => {
         <Text style={styles.text}>Enter your goal:</Text>
 
         <TextInput
+          mode="outlined"
           value={input}
           onChangeText={setInput}
           placeholder="e.g. Finish my project"
-          mode="outlined"
           style={styles.input}
           activeOutlineColor={theme.primary}
           textColor={theme.text}

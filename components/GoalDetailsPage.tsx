@@ -1,5 +1,11 @@
 import React, { useState } from "react";
-import { View, StyleSheet, Image } from "react-native";
+import {
+  View,
+  StyleSheet,
+  Image,
+  Keyboard,
+  TouchableWithoutFeedback,
+} from "react-native";
 import { useRoute } from "@react-navigation/native";
 import { Button, Text, TextInput } from "react-native-paper";
 import * as ImagePicker from "expo-image-picker";
@@ -26,42 +32,48 @@ const GoalDetailsPage = () => {
   };
 
   return (
-    <View style={[styles.container, { backgroundColor: theme.background }]}>
-      {image && (
-        <Image
-          source={{ uri: image }}
-          style={styles.image}
-          resizeMode="cover"
+    <TouchableWithoutFeedback onPress={Keyboard.dismiss} accessible={false}>
+      <View style={[styles.container, { backgroundColor: theme.background }]}>
+        {image && (
+          <Image
+            source={{ uri: image }}
+            style={styles.image}
+            resizeMode="cover"
+          />
+        )}
+
+        <Text style={[styles.title, { color: theme.text }]}>
+          Your Goal : {goal}
+        </Text>
+
+        <TextInput
+          mode="outlined"
+          placeholder="Write about your goal..."
+          value={description}
+          onChangeText={setDescription}
+          multiline
+          numberOfLines={4}
+          style={styles.input}
+          theme={{
+            colors: {
+              text: theme.text,
+              primary: theme.primary,
+              background: theme.surface,
+            },
+          }}
+          placeholderTextColor={theme.placeholder}
+          textColor={theme.text}
         />
-      )}
 
-      <Text style={[styles.title, { color: theme.text }]}>
-        Your Goal : {goal}
-      </Text>
-
-      <TextInput
-        mode="outlined"
-        label="Description"
-        value={description}
-        onChangeText={setDescription}
-        multiline
-        numberOfLines={4}
-        style={styles.input}
-        theme={{
-          colors: {
-            text: theme.text,
-            primary: theme.primary,
-            background: theme.surface,
-          },
-        }}
-        textColor={theme.text}
-        placeholderTextColor={theme.placeholder}
-      />
-
-      <Button mode="contained" onPress={pickImage} buttonColor={theme.primary}>
-        Pick Image
-      </Button>
-    </View>
+        <Button
+          mode="contained"
+          onPress={pickImage}
+          buttonColor={theme.primary}
+        >
+          Pick Image
+        </Button>
+      </View>
+    </TouchableWithoutFeedback>
   );
 };
 
