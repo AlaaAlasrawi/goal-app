@@ -1,13 +1,22 @@
 import React, { useState } from "react";
-import { ScrollView, StyleSheet, Text, View } from "react-native";
+import {
+  ScrollView,
+  StyleSheet,
+  Text,
+  View,
+  TouchableOpacity,
+} from "react-native";
+import { NavigationProp, useNavigation } from "@react-navigation/native";
 import { useTheme } from "../hooks/ThemeContext";
 import Header from "./Header";
 import { Button, TextInput } from "react-native-paper";
+import { RootStackParamList } from "../hooks/types";
 
 const GoalPage = () => {
   const [goals, setGoals] = useState<string[]>([]);
   const [input, setInput] = useState("");
   const { theme, colorTheme } = useTheme();
+  const navigation = useNavigation<NavigationProp<RootStackParamList>>();
 
   const handleAddGoal = () => {
     if (input.trim() === "") return;
@@ -16,9 +25,7 @@ const GoalPage = () => {
   };
 
   const styles = StyleSheet.create({
-    scroll: {
-      backgroundColor: theme.surface,
-    },
+    scroll: { backgroundColor: theme.surface },
     container: {
       padding: 24,
       backgroundColor: theme.background,
@@ -30,12 +37,12 @@ const GoalPage = () => {
       marginBottom: 12,
     },
     input: {
-      backgroundColor: theme.surface,
       marginBottom: 16,
+      overflow: "hidden",
+      elevation: 2,
+      backgroundColor: theme.surface,
     },
-    button: {
-      marginBottom: 24,
-    },
+    button: { marginBottom: 24 },
     goalCard: {
       padding: 16,
       borderRadius: 12,
@@ -66,8 +73,17 @@ const GoalPage = () => {
           placeholder="e.g. Finish my project"
           mode="outlined"
           style={styles.input}
+          theme={{
+            colors: {
+              placeholder: colorTheme ? "#aaa" : "#666",
+              primary: theme.primary,
+            },
+          }}
+          outlineColor={colorTheme ? "#555" : "#ccc"}
+          activeOutlineColor={theme.primary}
+          contentStyle={{ fontSize: 16, paddingVertical: 8 }}
           textColor={theme.text}
-          activeOutlineColor={theme.secondary}
+          placeholderTextColor={theme.placeholder}
         />
 
         <Button
@@ -81,9 +97,14 @@ const GoalPage = () => {
         </Button>
 
         {goals.map((goal, index) => (
-          <View key={index} style={styles.goalCard}>
-            <Text style={styles.goalText}>{goal}</Text>
-          </View>
+          <TouchableOpacity
+            key={index}
+            onPress={() => navigation.navigate("GoalDetails", { goal })}
+          >
+            <View style={styles.goalCard}>
+              <Text style={styles.goalText}>{goal}</Text>
+            </View>
+          </TouchableOpacity>
         ))}
       </View>
     </ScrollView>

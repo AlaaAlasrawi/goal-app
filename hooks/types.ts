@@ -3,3 +3,7 @@ export type TabRoutes = {
   Goals: undefined;
   ToggleTheme: undefined;
 };
+export type RootStackParamList = {
+  Root: undefined;
+  GoalDetails: { goal: string };
+};

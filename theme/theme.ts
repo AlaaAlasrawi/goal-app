@@ -11,6 +11,7 @@ export const lightTheme = {
   text: "#000000",
   onBackground: "#000000",
   onSurface: "#000000",
+  placeholder: "#888888",
 } as const;
 
 export const darkTheme = {
@@ -26,4 +27,5 @@ export const darkTheme = {
   text: "#FFFFFF",
   onBackground: "#FFFFFF",
   onSurface: "#FFFFFF",
+  placeholder: "#AAAAAA",
 } as const;
