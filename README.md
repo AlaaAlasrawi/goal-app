@@ -19,3 +19,4 @@ A simple and elegant goal-tracking mobile application built using **React Native
 > _Coming soon!_
 
 ----
+## made by Alaa Yousef
