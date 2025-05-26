@@ -26,7 +26,7 @@ const HomePage = () => {
       alignItems: "center",
       justifyContent: "center",
     },
-    subContainer: {},
+
     heading: {
       fontSize: 24,
       fontWeight: "bold",
@@ -53,21 +53,23 @@ const HomePage = () => {
     <ScrollView style={dynamicStyles.scroll}>
       <Header />
       <View style={dynamicStyles.container}>
-        <View style={dynamicStyles.subContainer}>
-          <Text style={dynamicStyles.heading}>Welcome to the Goal App 🏆</Text>
-          <Text style={dynamicStyles.subtitle}>
-            Track your goals, stay focused, and celebrate achievements!
-          </Text>
-          <Button
-            mode="contained"
-            onPress={handleStart}
-            style={dynamicStyles.button}
-            buttonColor={theme.primary}
-            labelStyle={{ color: theme.onPrimary }}
-          >
-            Let's Start
-          </Button>
-        </View>
+        <Text style={dynamicStyles.heading}>Welcome to the Goal App 🏆</Text>
+        <Text style={dynamicStyles.subtitle}>
+          Track your goals, stay focused, and celebrate achievements!
+        </Text>
+        <Button
+          mode="contained"
+          onPress={handleStart}
+          style={dynamicStyles.button}
+          buttonColor={theme.primary}
+          labelStyle={{
+            color: theme.onPrimary,
+            fontWeight: "bold",
+            fontSize: 16,
+          }}
+        >
+          Let's Start
+        </Button>
       </View>
     </ScrollView>
   );
