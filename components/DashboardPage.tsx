@@ -1,17 +1,32 @@
 import React, { useEffect, useState } from "react";
-import { View, ScrollView, StyleSheet, Dimensions } from "react-native";
+import {
+  View,
+  ScrollView,
+  StyleSheet,
+  Dimensions,
+  TouchableOpacity,
+} from "react-native";
 import AsyncStorage from "@react-native-async-storage/async-storage";
 import { Text } from "react-native-paper";
-import { BarChart } from "react-native-chart-kit";
+import { BarChart, PieChart } from "react-native-chart-kit";
 import { useTheme } from "../hooks/ThemeContext";
 import Header from "./Header";
+import { useNavigation } from "@react-navigation/native";
+import { NavigationProp } from "@react-navigation/native";
+import { RootStackParamList } from "../hooks/types";
 
 const screenWidth = Dimensions.get("window").width;
 
 const DashboardPage = () => {
   const { theme } = useTheme();
-  const [labels, setLabels] = useState<string[]>([]);
-  const [ratings, setRatings] = useState<number[]>([]);
+  const navigation = useNavigation<NavigationProp<RootStackParamList>>();
+  const [goals, setGoals] = useState<
+    {
+      title: string;
+      rating: number;
+      category?: string;
+    }[]
+  >([]);
 
   useEffect(() => {
     const loadRatings = async () => {
@@ -20,22 +35,27 @@ const DashboardPage = () => {
         const goalKeys = keys.filter((key) => key.startsWith("goal_"));
 
         const stores = await AsyncStorage.multiGet(goalKeys);
-        const loadedLabels: string[] = [];
-        const loadedRatings: number[] = [];
+        const loadedGoals: {
+          title: string;
+          rating: number;
+          category?: string;
+        }[] = [];
 
         stores.forEach(([key, value]) => {
           if (value) {
-            const goalTitle = decodeURIComponent(key.replace("goal_", ""));
+            const title = decodeURIComponent(key.replace("goal_", ""));
             const parsed = JSON.parse(value);
             if (typeof parsed.rating === "number") {
-              loadedLabels.push(goalTitle);
-              loadedRatings.push(parsed.rating);
+              loadedGoals.push({
+                title,
+                rating: parsed.rating,
+                category: parsed.category || "Uncategorized",
+              });
             }
           }
         });
 
-        setLabels(loadedLabels);
-        setRatings(loadedRatings);
+        setGoals(loadedGoals);
       } catch (error) {
         console.error("Failed to load goals:", error);
       }
@@ -44,26 +64,55 @@ const DashboardPage = () => {
     loadRatings();
   }, []);
 
+  const chartData = {
+    labels: goals.map((g) => g.title),
+    datasets: [{ data: goals.map((g) => g.rating) }],
+  };
+
+  const pieData = goals.reduce(
+    (
+      acc: {
+        name: string;
+        value: number;
+        color: string;
+        legendFontColor: string;
+        legendFontSize: number;
+      }[],
+      goal
+    ) => {
+      const existing = acc.find((c) => c.name === goal.category);
+      if (existing) existing.value += 1;
+      else
+        acc.push({
+          name: goal.category ?? "Uncategorized",
+          value: 1,
+          color: theme.primary,
+          legendFontColor: theme.text,
+          legendFontSize: 12,
+        });
+      return acc;
+    },
+    []
+  );
+
   return (
     <ScrollView
       style={[styles.container, { backgroundColor: theme.background }]}
     >
       <Header />
+
       <Text style={[styles.heading, { color: theme.text }]}>
-        📊 Goal Progress
+        📊 Goal Ratings
       </Text>
 
-      {ratings.length > 0 ? (
+      {goals.length > 0 ? (
         <BarChart
-          data={{
-            labels,
-            datasets: [{ data: ratings }],
-          }}
+          data={chartData}
           width={screenWidth - 32}
-          height={280}
+          height={260}
           fromZero
           yAxisLabel=""
-          yAxisSuffix="/10"
+          yAxisSuffix="%"
           chartConfig={{
             backgroundGradientFrom: theme.surface,
             backgroundGradientTo: theme.surface,
@@ -81,6 +130,27 @@ const DashboardPage = () => {
           No rated goals yet.
         </Text>
       )}
+
+      {pieData.length > 0 && (
+        <>
+          <Text style={[styles.heading, { color: theme.text }]}>
+            📈 Categories
+          </Text>
+          <PieChart
+            data={pieData}
+            width={screenWidth - 32}
+            height={240}
+            accessor="value"
+            backgroundColor="transparent"
+            paddingLeft="15"
+            chartConfig={{
+              color: () => theme.primary,
+              labelColor: () => theme.text,
+            }}
+            style={styles.chart}
+          />
+        </>
+      )}
     </ScrollView>
   );
 };
@@ -90,16 +160,17 @@ export default DashboardPage;
 const styles = StyleSheet.create({
   container: {
     flex: 1,
+    paddingHorizontal: 16,
   },
   heading: {
-    fontSize: 22,
-    fontWeight: "bold",
+    fontSize: 20,
+    fontWeight: "600",
     textAlign: "center",
-    marginBottom: 20,
     marginTop: 30,
+    marginBottom: 16,
   },
   chart: {
-    borderRadius: 16,
-    padding: 15,
+    borderRadius: 12,
+    marginBottom: 30,
   },
 });
