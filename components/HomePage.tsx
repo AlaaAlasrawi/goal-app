@@ -26,7 +26,6 @@ const HomePage = () => {
       alignItems: "center",
       justifyContent: "center",
     },
-
     heading: {
       fontSize: 24,
       fontWeight: "bold",
@@ -50,7 +49,13 @@ const HomePage = () => {
   });
 
   return (
-    <ScrollView style={dynamicStyles.scroll}>
+    <ScrollView
+      style={dynamicStyles.scroll}
+      contentContainerStyle={{ flexGrow: 1 }}
+      keyboardShouldPersistTaps="handled"
+      scrollEnabled={true}
+      showsVerticalScrollIndicator={false}
+    >
       <Header />
       <View style={dynamicStyles.container}>
         <Text style={dynamicStyles.heading}>Welcome to the Goal App 🏆</Text>
