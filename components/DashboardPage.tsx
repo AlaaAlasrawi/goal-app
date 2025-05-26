@@ -1,76 +1,83 @@
 import React, { useEffect, useState } from "react";
-import { View, StyleSheet, Dimensions, ScrollView } from "react-native";
-import { Text } from "react-native-paper";
+import { View, ScrollView, StyleSheet, Dimensions } from "react-native";
 import AsyncStorage from "@react-native-async-storage/async-storage";
+import { Text } from "react-native-paper";
 import { BarChart } from "react-native-chart-kit";
 import { useTheme } from "../hooks/ThemeContext";
+import Header from "./Header";
+
+const screenWidth = Dimensions.get("window").width;
 
 const DashboardPage = () => {
   const { theme } = useTheme();
-  const [goalTitles, setGoalTitles] = useState<string[]>([]);
+  const [labels, setLabels] = useState<string[]>([]);
   const [ratings, setRatings] = useState<number[]>([]);
 
   useEffect(() => {
-    const loadData = async () => {
+    const loadRatings = async () => {
       try {
         const keys = await AsyncStorage.getAllKeys();
         const goalKeys = keys.filter((key) => key.startsWith("goal_"));
-        const stores = await AsyncStorage.multiGet(goalKeys);
 
-        const titles: string[] = [];
-        const values: number[] = [];
+        const stores = await AsyncStorage.multiGet(goalKeys);
+        const loadedLabels: string[] = [];
+        const loadedRatings: number[] = [];
 
         stores.forEach(([key, value]) => {
           if (value) {
+            const goalTitle = decodeURIComponent(key.replace("goal_", ""));
             const parsed = JSON.parse(value);
-            const goalName = decodeURIComponent(key.replace("goal_", ""));
-            titles.push(goalName);
-            values.push(parsed.rating || 0);
+            if (typeof parsed.rating === "number") {
+              loadedLabels.push(goalTitle);
+              loadedRatings.push(parsed.rating);
+            }
           }
         });
 
-        setGoalTitles(titles);
-        setRatings(values);
+        setLabels(loadedLabels);
+        setRatings(loadedRatings);
       } catch (error) {
-        console.error("Failed to load dashboard data:", error);
+        console.error("Failed to load goals:", error);
       }
     };
 
-    loadData();
+    loadRatings();
   }, []);
 
   return (
     <ScrollView
       style={[styles.container, { backgroundColor: theme.background }]}
     >
-      <Text style={[styles.title, { color: theme.text }]}>
-        🎯 Goal Progress Dashboard
+      <Header />
+      <Text style={[styles.heading, { color: theme.text }]}>
+        📊 Goal Progress
       </Text>
 
-      {goalTitles.length > 0 ? (
+      {ratings.length > 0 ? (
         <BarChart
           data={{
-            labels: goalTitles,
+            labels,
             datasets: [{ data: ratings }],
           }}
-          width={Dimensions.get("window").width - 32}
+          width={screenWidth - 32}
           height={280}
           fromZero
+          yAxisLabel=""
           yAxisSuffix="/10"
           chartConfig={{
             backgroundGradientFrom: theme.surface,
             backgroundGradientTo: theme.surface,
+            decimalPlaces: 1,
             color: () => theme.primary,
             labelColor: () => theme.text,
             propsForBackgroundLines: {
               stroke: "#ccc",
             },
           }}
-          yAxisLabel=""
-          style={{ borderRadius: 12 }}
+          style={styles.chart}
         />
       ) : (
-        <Text style={{ color: theme.text, marginTop: 20 }}>
+        <Text style={{ color: theme.text, textAlign: "center", marginTop: 20 }}>
           No rated goals yet.
         </Text>
       )}
@@ -83,12 +90,16 @@ export default DashboardPage;
 const styles = StyleSheet.create({
   container: {
     flex: 1,
-    padding: 16,
   },
-  title: {
+  heading: {
     fontSize: 22,
     fontWeight: "bold",
     textAlign: "center",
-    marginBottom: 24,
+    marginBottom: 20,
+    marginTop: 30,
+  },
+  chart: {
+    borderRadius: 16,
+    padding: 15,
   },
 });

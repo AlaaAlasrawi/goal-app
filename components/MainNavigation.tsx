@@ -2,9 +2,10 @@ import React from "react";
 import { createBottomTabNavigator } from "@react-navigation/bottom-tabs";
 import HomePage from "../components/HomePage";
 import GoalPage from "../components/GoalPage";
+import DashboardPage from "../components/DashboardPage";
 import { MaterialCommunityIcons } from "@expo/vector-icons";
 import { useTheme } from "../hooks/ThemeContext";
-import { TouchableOpacity, Text, View, StyleSheet } from "react-native";
+import { TouchableOpacity, Text, StyleSheet } from "react-native";
 import { TabRoutes } from "../hooks/types";
 
 const Tab = createBottomTabNavigator<TabRoutes>();
@@ -20,8 +21,10 @@ const MainNavigation = () => {
       screenOptions={({ route }) => ({
         tabBarIcon: ({ color, size }) => {
           let iconName = "home";
+
           if (route.name === "Home") iconName = "home";
           else if (route.name === "Goals") iconName = "target";
+          else if (route.name === "Dashboard") iconName = "chart-bar";
           else if (route.name === "ToggleTheme")
             iconName =
               theme.mode === "dark" ? "weather-night" : "weather-sunny";
@@ -45,6 +48,7 @@ const MainNavigation = () => {
     >
       <Tab.Screen name="Home" component={HomePage} />
       <Tab.Screen name="Goals" component={GoalPage} />
+      <Tab.Screen name="Dashboard" component={DashboardPage} />
 
       <Tab.Screen
         name="ToggleTheme"

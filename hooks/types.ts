@@ -1,4 +1,5 @@
 export type TabRoutes = {
+  Dashboard: undefined;
   Home: undefined;
   Goals: undefined;
   ToggleTheme: undefined;
