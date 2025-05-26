@@ -5,22 +5,61 @@ import {
   Image,
   Keyboard,
   TouchableWithoutFeedback,
+  Text as RNText,
 } from "react-native";
 import { useRoute } from "@react-navigation/native";
 import { Button, Text, TextInput } from "react-native-paper";
 import * as ImagePicker from "expo-image-picker";
-import { useTheme } from "../hooks/ThemeContext";
 import AsyncStorage from "@react-native-async-storage/async-storage";
+import { useTheme } from "../hooks/ThemeContext";
+import Slider from "@react-native-community/slider";
 
 const GoalDetailsPage = () => {
-  const [description, setDescription] = useState("");
-  const [image, setImage] = useState<string | null>(null);
-  const [saved, setSaved] = useState(false);
-
   const route = useRoute();
   const { goal } = route.params as { goal: string };
   const { theme } = useTheme();
+
+  const [description, setDescription] = useState("");
+  const [image, setImage] = useState<string | null>(null);
+  const [rating, setRating] = useState(0);
+  const [saved, setSaved] = useState(false);
+
   const storageKey = `goal_${encodeURIComponent(goal)}`;
+
+  useEffect(() => {
+    const loadGoalDetails = async () => {
+      try {
+        const stored = await AsyncStorage.getItem(storageKey);
+        if (stored) {
+          const parsed = JSON.parse(stored);
+          setDescription(parsed.description || "");
+          setImage(parsed.image || null);
+          setRating(parsed.rating || 0);
+        }
+      } catch (error) {
+        console.error("❌ Failed to load goal:", error);
+      }
+    };
+
+    loadGoalDetails();
+  }, []);
+
+  useEffect(() => {
+    if (description || image || rating > 0) {
+      const saveGoalDetails = async () => {
+        try {
+          const goalData = { description, image, rating };
+          await AsyncStorage.setItem(storageKey, JSON.stringify(goalData));
+          setSaved(true);
+          setTimeout(() => setSaved(false), 1200);
+        } catch (error) {
+          console.error("❌ Failed to save goal:", error);
+        }
+      };
+
+      saveGoalDetails();
+    }
+  }, [description, image, rating]);
 
   const pickImage = async () => {
     const result = await ImagePicker.launchImageLibraryAsync({
@@ -34,40 +73,6 @@ const GoalDetailsPage = () => {
       setImage(result.assets[0].uri);
     }
   };
-
-  const saveGoalDetails = async () => {
-    try {
-      const goalData = { description, image };
-      await AsyncStorage.setItem(storageKey, JSON.stringify(goalData));
-      setSaved(true);
-      setTimeout(() => setSaved(false), 1200);
-    } catch (error) {
-      console.error("❌ Failed to save goal:", error);
-    }
-  };
-
-  const loadGoalDetails = async () => {
-    try {
-      const stored = await AsyncStorage.getItem(storageKey);
-      if (stored) {
-        const parsed = JSON.parse(stored);
-        setDescription(parsed.description || "");
-        setImage(parsed.image || null);
-      }
-    } catch (error) {
-      console.error("❌ Failed to load goal:", error);
-    }
-  };
-
-  useEffect(() => {
-    if (description || image) {
-      saveGoalDetails();
-    }
-  }, [description, image]);
-
-  useEffect(() => {
-    loadGoalDetails();
-  }, []);
 
   return (
     <TouchableWithoutFeedback onPress={Keyboard.dismiss} accessible={false}>
@@ -102,6 +107,26 @@ const GoalDetailsPage = () => {
           }}
           textColor={theme.text}
         />
+
+        <View style={styles.sliderContainer}>
+          <Text style={{ color: theme.text, marginBottom: 4 }}>
+            Rate this goal (1–10):
+          </Text>
+          <Slider
+            minimumValue={1}
+            maximumValue={10}
+            value={rating}
+            onValueChange={setRating}
+            minimumTrackTintColor={theme.primary}
+            maximumTrackTintColor="#ccc"
+            thumbTintColor={theme.primary}
+            style={styles.slider}
+          />
+
+          <RNText style={{ color: theme.text, textAlign: "center" }}>
+            Your Rating: {rating.toFixed(1)}
+          </RNText>
+        </View>
 
         <Button
           mode="contained"
@@ -139,5 +164,12 @@ const styles = StyleSheet.create({
   input: {
     marginBottom: 10,
     borderRadius: 12,
+  },
+  sliderContainer: {
+    marginBottom: 10,
+  },
+  slider: {
+    width: "100%",
+    height: 40,
   },
 });
