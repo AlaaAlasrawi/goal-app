@@ -30,6 +30,7 @@ const GoalPage = () => {
       padding: 24,
       backgroundColor: theme.background,
       minHeight: "100%",
+      flexGrow: 1,
     },
     text: {
       color: theme.text,
