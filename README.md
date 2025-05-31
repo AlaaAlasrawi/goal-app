@@ -16,11 +16,10 @@ A simple and elegant goal-tracking mobile application built using **React Native
 
 ## 📱 Screenshots
 
-### 🟢 Light Mode  
-<img src="https://github.com/user-attachments/assets/b5217ed9-3fe0-4f19-b22a-2ff1477af1f1" width="300"/>
-
-### 🌑 Dark Mode  
-<img src="https://github.com/user-attachments/assets/57795829-5f3a-4cd4-b0ba-88d15cd4468a" width="300"/>
+<div style="display: flex; gap: 10px; justify-content: center;">
+  <img src="https://github.com/user-attachments/assets/b5217ed9-3fe0-4f19-b22a-2ff1477af1f1" width="300"/>
+  <img src="https://github.com/user-attachments/assets/57795829-5f3a-4cd4-b0ba-88d15cd4468a" width="300"/>
+</div>
 
 ----
 ## made by Alaa Yousef
