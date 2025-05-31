@@ -3,8 +3,9 @@ import { ScrollView, StyleSheet, Text, View } from "react-native";
 import { useTheme } from "../hooks/ThemeContext";
 import { Button } from "react-native-paper";
 import { NavigationProp, useNavigation } from "@react-navigation/native";
-import Header from "./Header";
+
 import { TabRoutes } from "../hooks/types";
+import Header from "../components/Header";
 
 const HomePage = () => {
   const { theme } = useTheme();

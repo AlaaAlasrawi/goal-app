@@ -10,7 +10,7 @@ import AsyncStorage from "@react-native-async-storage/async-storage";
 import { Text } from "react-native-paper";
 import { BarChart, PieChart } from "react-native-chart-kit";
 import { useTheme } from "../hooks/ThemeContext";
-import Header from "./Header";
+import Header from "../components/Header";
 import { useNavigation } from "@react-navigation/native";
 import { NavigationProp } from "@react-navigation/native";
 import { RootStackParamList } from "../hooks/types";

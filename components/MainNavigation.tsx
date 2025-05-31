@@ -1,12 +1,14 @@
 import React from "react";
+import { TouchableOpacity, Text, StyleSheet } from "react-native";
+
 import { createBottomTabNavigator } from "@react-navigation/bottom-tabs";
-import HomePage from "../components/HomePage";
-import GoalPage from "../components/GoalPage";
-import DashboardPage from "../components/DashboardPage";
 import { MaterialCommunityIcons } from "@expo/vector-icons";
 import { useTheme } from "../hooks/ThemeContext";
-import { TouchableOpacity, Text, StyleSheet } from "react-native";
 import { TabRoutes } from "../hooks/types";
+
+import HomePage from "../pages/HomePage";
+import GoalPage from "../pages/GoalPage";
+import DashboardPage from "../pages/DashboardPage";
 
 const Tab = createBottomTabNavigator<TabRoutes>();
 
