@@ -160,7 +160,6 @@ export default DashboardPage;
 const styles = StyleSheet.create({
   container: {
     flex: 1,
-    paddingHorizontal: 16,
   },
   heading: {
     fontSize: 20,
@@ -170,6 +169,7 @@ const styles = StyleSheet.create({
     marginBottom: 16,
   },
   chart: {
+    paddingLeft: 15,
     borderRadius: 12,
     marginBottom: 30,
   },

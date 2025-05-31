@@ -1,4 +1,4 @@
-import React, { useState } from "react";
+import React, { useEffect, useState } from "react";
 import {
   ScrollView,
   StyleSheet,
@@ -11,12 +11,29 @@ import { useTheme } from "../hooks/ThemeContext";
 import Header from "./Header";
 import { Button, TextInput } from "react-native-paper";
 import { RootStackParamList } from "../hooks/types";
+import AsyncStorage from "@react-native-async-storage/async-storage";
 
 const GoalPage = () => {
   const [goals, setGoals] = useState<string[]>([]);
   const [input, setInput] = useState("");
   const { theme } = useTheme();
   const navigation = useNavigation<NavigationProp<RootStackParamList>>();
+
+  // Load saved goals on mount
+  useEffect(() => {
+    const loadGoals = async () => {
+      const saved = await AsyncStorage.getItem("goals");
+      if (saved) {
+        setGoals(JSON.parse(saved));
+      }
+    };
+    loadGoals();
+  }, []);
+
+  // Save goals every time it updates
+  useEffect(() => {
+    AsyncStorage.setItem("goals", JSON.stringify(goals));
+  }, [goals]);
 
   const handleAddGoal = () => {
     if (input.trim() === "") return;

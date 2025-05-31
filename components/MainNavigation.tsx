@@ -56,7 +56,6 @@ const MainNavigation = () => {
         options={{
           tabBarButton: ({ accessibilityState, style }) => {
             const isActive = accessibilityState?.selected;
-
             return (
               <TouchableOpacity
                 onPress={(e) => {
