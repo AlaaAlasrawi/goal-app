@@ -9,17 +9,21 @@ import {
 } from "react-native";
 import { useRoute } from "@react-navigation/native";
 import { Button, Text, TextInput } from "react-native-paper";
-import * as ImagePicker from "expo-image-picker";
-import AsyncStorage from "@react-native-async-storage/async-storage";
 import { useTheme } from "../hooks/ThemeContext";
 import Slider from "@react-native-community/slider";
-import { useNavigation } from "@react-navigation/native"; // add this if not already
-
+import { useNavigation } from "@react-navigation/native";
 import { useDispatch } from "react-redux";
 import { deleteGoal } from "../redux/goalsSlice";
+import {
+  loadGoalDetails,
+  saveGoalDetails,
+  deleteGoalData,
+  pickGoalImage,
+} from "../utils/goalDetailsHelpers";
 
 const GoalDetailsPage = () => {
   const route = useRoute();
+
   const { goal } = route.params as { goal: string };
   const { theme } = useTheme();
 
@@ -28,61 +32,52 @@ const GoalDetailsPage = () => {
   const [rating, setRating] = useState(0);
   const [saved, setSaved] = useState(false);
 
-  const storageKey = `goal_${encodeURIComponent(goal)}`;
+  const navigation = useNavigation();
+  const dispatch = useDispatch();
 
   useEffect(() => {
-    const loadGoalDetails = async () => {
-      try {
-        const stored = await AsyncStorage.getItem(storageKey);
-        if (stored) {
-          const parsed = JSON.parse(stored);
-          setDescription(parsed.description || "");
-          setImage(parsed.image || null);
-          setRating(parsed.rating || 0);
-        }
-      } catch (error) {
+    loadGoalDetails(goal)
+      .then((parsed) => {
+        setDescription(parsed.description || "");
+        setImage(parsed.image || null);
+        setRating(parsed.rating || 0);
+      })
+      .catch((error) => {
         console.error("❌ Failed to load goal:", error);
-      }
-    };
-
-    loadGoalDetails();
+      });
   }, []);
 
   useEffect(() => {
-    if (description || image || rating > 0) {
-      const saveGoalDetails = async () => {
-        try {
-          const goalData = { description, image, rating };
-          await AsyncStorage.setItem(storageKey, JSON.stringify(goalData));
-          setSaved(true);
-          setTimeout(() => setSaved(false), 1200);
-        } catch (error) {
-          console.error("❌ Failed to save goal:", error);
-        }
-      };
+    let isCancelled = false;
+    let timeoutId: NodeJS.Timeout;
 
-      saveGoalDetails();
+    if (description || image || rating > 0) {
+      saveGoalDetails(goal, { description, image, rating })
+        .then(() => {
+          if (!isCancelled) {
+            setSaved(true);
+            timeoutId = setTimeout(() => setSaved(false), 1200);
+          }
+        })
+        .catch((error) => {
+          console.error("❌ Failed to save goal:", error);
+        });
     }
+
+    // Cleanup function on unmount or if inputs change quickly
+    return () => {
+      isCancelled = true;
+      clearTimeout(timeoutId);
+    };
   }, [description, image, rating]);
 
-  const pickImage = async () => {
-    const result = await ImagePicker.launchImageLibraryAsync({
-      mediaTypes: ImagePicker.MediaTypeOptions.Images,
-      allowsEditing: true,
-      aspect: [16, 9],
-      quality: 1,
-    });
-
-    if (!result.canceled && result.assets.length > 0) {
-      setImage(result.assets[0].uri);
-    }
+  const handlePickImage = async () => {
+    const uri = await pickGoalImage();
+    if (uri) setImage(uri);
   };
 
-  const navigation = useNavigation();
-
-  const dispatch = useDispatch();
-
-  const handleDeleteGoal = () => {
+  const handleDeleteGoal = async () => {
+    await deleteGoalData(goal);
     dispatch(deleteGoal(goal));
     navigation.goBack();
   };
@@ -119,6 +114,7 @@ const GoalDetailsPage = () => {
             },
           }}
           textColor={theme.text}
+          placeholderTextColor={theme.placeholder}
         />
 
         <View style={styles.sliderContainer}>
@@ -143,7 +139,7 @@ const GoalDetailsPage = () => {
 
         <Button
           mode="contained"
-          onPress={pickImage}
+          onPress={handlePickImage}
           buttonColor={theme.primary}
         >
           Pick Image
