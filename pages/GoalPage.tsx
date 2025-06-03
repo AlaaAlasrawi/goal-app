@@ -6,35 +6,30 @@ import Header from "../components/Header";
 import GoalInput from "../components/GoalInput";
 import GoalListItem from "../components/GoalListItem";
 import { Button } from "react-native-paper";
+import { useDispatch, useSelector } from "react-redux";
+import { RootState } from "../redux/store";
+import { setGoals, addGoal, clearGoals } from "../redux/goalsSlice";
 
 const GoalPage = () => {
-  const [goals, setGoals] = useState<string[]>([]);
+  const goals = useSelector((state: RootState) => state.goals.list);
+  const dispatch = useDispatch();
 
   const { theme } = useTheme();
 
   useEffect(() => {
-    const loadGoals = async () => {
-      const saved = await AsyncStorage.getItem("goals");
-      if (saved) {
-        setGoals(JSON.parse(saved));
-      }
-    };
-    loadGoals();
+    AsyncStorage.getItem("goals").then((saved) => {
+      if (saved) dispatch(setGoals(JSON.parse(saved)));
+    });
   }, []);
-
-  useEffect(() => {
-    AsyncStorage.setItem("goals", JSON.stringify(goals));
-  }, [goals]);
 
   const handleAddGoal = (input: string) => {
     if (input.trim() === "") return;
-    setGoals((prevGoals) => [...prevGoals, input.trim()]);
+    dispatch(addGoal(input.trim()));
   };
 
-  function handleDeleteAllGoals() {
-    setGoals([]);
-    AsyncStorage.removeItem("goals");
-  }
+  const handleDeleteAllGoals = () => {
+    dispatch(clearGoals());
+  };
 
   const styles = StyleSheet.create({
     scroll: { backgroundColor: theme.surface },

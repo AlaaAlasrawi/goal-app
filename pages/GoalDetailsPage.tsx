@@ -15,6 +15,9 @@ import { useTheme } from "../hooks/ThemeContext";
 import Slider from "@react-native-community/slider";
 import { useNavigation } from "@react-navigation/native"; // add this if not already
 
+import { useDispatch } from "react-redux";
+import { deleteGoal } from "../redux/goalsSlice";
+
 const GoalDetailsPage = () => {
   const route = useRoute();
   const { goal } = route.params as { goal: string };
@@ -77,22 +80,12 @@ const GoalDetailsPage = () => {
 
   const navigation = useNavigation();
 
-  async function handleDeleteGoal() {
-    try {
-      const storedGoals = await AsyncStorage.getItem("goals");
-      const parsedGoals: string[] = storedGoals ? JSON.parse(storedGoals) : [];
+  const dispatch = useDispatch();
 
-      const updatedGoals = parsedGoals.filter((g) => g !== goal);
-      await AsyncStorage.setItem("goals", JSON.stringify(updatedGoals));
-
-      // remove goal details
-      await AsyncStorage.removeItem(storageKey);
-
-      navigation.goBack();
-    } catch (error) {
-      console.error("❌ Failed to delete goal:", error);
-    }
-  }
+  const handleDeleteGoal = () => {
+    dispatch(deleteGoal(goal));
+    navigation.goBack();
+  };
 
   return (
     <TouchableWithoutFeedback onPress={Keyboard.dismiss} accessible={false}>
