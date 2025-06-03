@@ -5,6 +5,7 @@ import AsyncStorage from "@react-native-async-storage/async-storage";
 import Header from "../components/Header";
 import GoalInput from "../components/GoalInput";
 import GoalListItem from "../components/GoalListItem";
+import { Button } from "react-native-paper";
 
 const GoalPage = () => {
   const [goals, setGoals] = useState<string[]>([]);
@@ -29,6 +30,8 @@ const GoalPage = () => {
     setGoals((prevGoals) => [...prevGoals, input.trim()]);
   };
 
+  function handleDeleteAllGoals() {}
+
   const styles = StyleSheet.create({
     scroll: { backgroundColor: theme.surface },
     container: {
@@ -37,6 +40,7 @@ const GoalPage = () => {
       minHeight: "100%",
       flexGrow: 1,
     },
+    button: { marginBottom: 24 },
   });
 
   return (
@@ -44,10 +48,20 @@ const GoalPage = () => {
       <Header />
       <View style={styles.container}>
         <GoalInput handleAddGoal={handleAddGoal} />
-
         {goals.map((goal, index) => (
           <GoalListItem goal={goal} index={index} />
-        ))}
+        ))}{" "}
+        <Button
+          mode="contained"
+          onPress={() => {
+            handleDeleteAllGoals();
+          }}
+          style={styles.button}
+          buttonColor={theme.secondary}
+          labelStyle={{ color: theme.onPrimary }}
+        >
+          Clear All
+        </Button>
       </View>
     </ScrollView>
   );

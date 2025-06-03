@@ -6,10 +6,10 @@ import React, {
   useState,
 } from "react";
 import { useColorScheme, Animated } from "react-native";
-import { lightTheme, darkTheme, ThemeType } from "../theme/theme";
+import { lightTheme, darkTheme } from "../theme/theme";
 
 type ThemeContextType = {
-  theme: ThemeType;
+  theme: any;
   colorTheme: boolean;
   toggleTheme: () => void;
   backgroundAnim: Animated.Value;
