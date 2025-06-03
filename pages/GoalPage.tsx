@@ -1,23 +1,15 @@
 import React, { useEffect, useState } from "react";
-import {
-  Modal,
-  Pressable,
-  ScrollView,
-  StyleSheet,
-  Text,
-  View,
-} from "react-native";
+import { ScrollView, StyleSheet, View } from "react-native";
 import { useTheme } from "../hooks/ThemeContext";
 import AsyncStorage from "@react-native-async-storage/async-storage";
 import Header from "../components/Header";
 import GoalInput from "../components/GoalInput";
 import GoalListItem from "../components/GoalListItem";
 import { Button } from "react-native-paper";
-import AppModal from "../components/AppModal";
 
 const GoalPage = () => {
   const [goals, setGoals] = useState<string[]>([]);
-  const [open, setOpen] = useState(false);
+
   const { theme } = useTheme();
 
   useEffect(() => {
@@ -44,14 +36,6 @@ const GoalPage = () => {
     AsyncStorage.removeItem("goals");
   }
 
-  function onPressFunction() {
-    console.log("preas");
-    setOpen(true);
-  }
-
-  function handleClose() {
-    setOpen(false);
-  }
   const styles = StyleSheet.create({
     scroll: { backgroundColor: theme.surface },
     container: {
@@ -61,19 +45,6 @@ const GoalPage = () => {
       flexGrow: 1,
     },
     button: { marginBottom: 24 },
-    modalContainer: {
-      flex: 1,
-      justifyContent: "center",
-      alignItems: "center",
-      backgroundColor: "rgba(0, 0, 0, 0.5)",
-    },
-    modalContent: {
-      backgroundColor: theme.surface,
-      padding: 24,
-      borderRadius: 10,
-      width: "80%",
-      alignItems: "center",
-    },
   });
 
   return (
@@ -84,21 +55,19 @@ const GoalPage = () => {
         {goals.map((goal, index) => (
           <GoalListItem goal={goal} index={index} key={index} />
         ))}
-        <Button
-          mode="contained"
-          onPress={() => {
-            handleDeleteAllGoals();
-          }}
-          style={styles.button}
-          buttonColor={theme.secondary}
-          labelStyle={{ color: theme.onPrimary }}
-        >
-          Clear All
-        </Button>
-        <Pressable onPress={onPressFunction}>
-          <Text style={{ color: theme.text }}>I'm pressable!</Text>
-        </Pressable>
-        {open && <AppModal handleClose={handleClose} isOpen={open} />}
+        {goals.length > 0 && (
+          <Button
+            mode="contained"
+            onPress={() => {
+              handleDeleteAllGoals();
+            }}
+            style={styles.button}
+            buttonColor={theme.secondary}
+            labelStyle={{ color: theme.onPrimary }}
+          >
+            Clear All
+          </Button>
+        )}
       </View>
     </ScrollView>
   );

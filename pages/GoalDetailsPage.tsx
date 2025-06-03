@@ -13,6 +13,7 @@ import * as ImagePicker from "expo-image-picker";
 import AsyncStorage from "@react-native-async-storage/async-storage";
 import { useTheme } from "../hooks/ThemeContext";
 import Slider from "@react-native-community/slider";
+import { useNavigation } from "@react-navigation/native"; // add this if not already
 
 const GoalDetailsPage = () => {
   const route = useRoute();
@@ -74,6 +75,25 @@ const GoalDetailsPage = () => {
     }
   };
 
+  const navigation = useNavigation();
+
+  async function handleDeleteGoal() {
+    try {
+      const storedGoals = await AsyncStorage.getItem("goals");
+      const parsedGoals: string[] = storedGoals ? JSON.parse(storedGoals) : [];
+
+      const updatedGoals = parsedGoals.filter((g) => g !== goal);
+      await AsyncStorage.setItem("goals", JSON.stringify(updatedGoals));
+
+      // remove goal details
+      await AsyncStorage.removeItem(storageKey);
+
+      navigation.goBack();
+    } catch (error) {
+      console.error("❌ Failed to delete goal:", error);
+    }
+  }
+
   return (
     <TouchableWithoutFeedback onPress={Keyboard.dismiss} accessible={false}>
       <View style={[styles.container, { backgroundColor: theme.background }]}>
@@ -134,6 +154,14 @@ const GoalDetailsPage = () => {
           buttonColor={theme.primary}
         >
           Pick Image
+        </Button>
+        <Button
+          mode="contained"
+          onPress={handleDeleteGoal}
+          buttonColor={theme.secondary}
+          style={{ marginTop: 20 }}
+        >
+          Delete Goal
         </Button>
 
         {saved && (
