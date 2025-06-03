@@ -45,6 +45,7 @@ const GoalInput = ({ handleAddGoal }: GoalInputProps) => {
         mode="contained"
         onPress={() => {
           handleAddGoal(input);
+          setInput("");
         }}
         style={styles.button}
         buttonColor={theme.primary}
