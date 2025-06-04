@@ -2,6 +2,7 @@ import { ScrollView, StyleSheet } from "react-native";
 import { Text } from "react-native-paper";
 import { useTheme } from "../hooks/ThemeContext";
 import Header from "../components/Header";
+import DonutPieChart from "../components/charts/DonutPieChart";
 
 const DashboardPage = () => {
   const { theme } = useTheme();
@@ -14,6 +15,7 @@ const DashboardPage = () => {
       <Text style={[styles.heading, { color: theme.text }]}>
         📊 Goal Ratings
       </Text>
+      <DonutPieChart />
     </ScrollView>
   );
 };

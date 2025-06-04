@@ -2646,6 +2646,11 @@ expo-keep-awake@~14.1.4:
   resolved "https://registry.npmjs.org/expo-keep-awake/-/expo-keep-awake-14.1.4.tgz"
   integrity sha512-wU9qOnosy4+U4z/o4h8W9PjPvcFMfZXrlUoKTMBW7F4pLqhkkP/5G4EviPZixv4XWFMjn1ExQ5rV6BX8GwJsWA==
 
+expo-linear-gradient@~14.1.4:
+  version "14.1.4"
+  resolved "https://registry.yarnpkg.com/expo-linear-gradient/-/expo-linear-gradient-14.1.4.tgz#fcb2b586cfd21dd5f3076de467f92b55d9c47cb2"
+  integrity sha512-bImj2qqIjnl+VHYGnIwan9LxmGvb8e4hFqHpxsPzUiK7Ady7uERrXPhJcyTKTxRf4RL2sQRDpoOKzBYNdQDmuw==
+
 expo-modules-autolinking@2.1.10:
   version "2.1.10"
   resolved "https://registry.npmjs.org/expo-modules-autolinking/-/expo-modules-autolinking-2.1.10.tgz"
@@ -2822,6 +2827,11 @@ getenv@^1.0.0:
   version "1.0.0"
   resolved "https://registry.npmjs.org/getenv/-/getenv-1.0.0.tgz"
   integrity sha512-7yetJWqbS9sbn0vIfliPsFgoXMKn/YMF+Wuiog97x+urnSRRRZ7xB+uVkwGKzRgq9CDFfMQnE9ruL5DHv9c6Xg==
+
+gifted-charts-core@0.1.63:
+  version "0.1.63"
+  resolved "https://registry.yarnpkg.com/gifted-charts-core/-/gifted-charts-core-0.1.63.tgz#c552bd6f5a007c6b7559a96e2f16b3f3251e87c5"
+  integrity sha512-e5sJwI2RIcdnJ4p4ozUHfpbVUXyHn2CJj2h8BpmeugjgF7k7KvL0QI22M4pVQIIIRei3exjEhv8HwXaFtAx/dA==
 
 glob@^10.3.10, glob@^10.4.2:
   version "10.4.5"
@@ -4168,6 +4178,13 @@ react-native-gesture-handler@~2.24.0:
     hoist-non-react-statics "^3.3.0"
     invariant "^2.2.4"
 
+react-native-gifted-charts@^1.4.61:
+  version "1.4.61"
+  resolved "https://registry.yarnpkg.com/react-native-gifted-charts/-/react-native-gifted-charts-1.4.61.tgz#ada268c336e273fd40ca9c60ac5757bb2d25835e"
+  integrity sha512-UCNZDntpvqJV0x8iBhx9fMTjFLUb3PI3V77Wni10HFJgMwM6SA3Xg/VpkRmIGT4r4PRWGcsFTInyR3eu8XYuTQ==
+  dependencies:
+    gifted-charts-core "0.1.63"
+
 react-native-is-edge-to-edge@1.1.7, react-native-is-edge-to-edge@^1.1.6:
   version "1.1.7"
   resolved "https://registry.npmjs.org/react-native-is-edge-to-edge/-/react-native-is-edge-to-edge-1.1.7.tgz"
@@ -4230,9 +4247,9 @@ react-native-svg-transformer@^1.5.1:
     "@svgr/plugin-svgo" "^8.1.0"
     path-dirname "^1.0.2"
 
-react-native-svg@^15.11.2:
+react-native-svg@15.11.2:
   version "15.11.2"
-  resolved "https://registry.npmjs.org/react-native-svg/-/react-native-svg-15.11.2.tgz"
+  resolved "https://registry.yarnpkg.com/react-native-svg/-/react-native-svg-15.11.2.tgz#7540e8e1eabc4dcd3b1e35ada5a1d9f1b96d37c4"
   integrity sha512-+YfF72IbWQUKzCIydlijV1fLuBsQNGMT6Da2kFlo1sh+LE3BIm/2Q7AR1zAAR6L0BFLi1WaQPLfFUC9bNZpOmw==
   dependencies:
     css-select "^5.1.0"
