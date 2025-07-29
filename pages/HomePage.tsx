@@ -5,7 +5,6 @@ import { Button } from "react-native-paper";
 import { NavigationProp, useNavigation } from "@react-navigation/native";
 
 import { TabRoutes } from "../hooks/types";
-import Header from "../components/Header";
 
 const HomePage = () => {
   const { theme } = useTheme();
@@ -57,7 +56,6 @@ const HomePage = () => {
       scrollEnabled={true}
       showsVerticalScrollIndicator={false}
     >
-      <Header />
       <View style={dynamicStyles.container}>
         <Text style={dynamicStyles.heading}>Welcome to the Goal App 🏆</Text>
         <Text style={dynamicStyles.subtitle}>

@@ -1056,6 +1056,11 @@
   resolved "https://registry.npmjs.org/@expo/vector-icons/-/vector-icons-14.1.0.tgz"
   integrity sha512-7T09UE9h8QDTsUeMGymB4i+iqvtEeaO5VvUjryFB4tugDTG/bkzViWA74hm5pfjjDEhYMXWaX112mcvhccmIwQ==
 
+"@expo/vector-icons@^14.1.0":
+  version "14.1.0"
+  resolved "https://registry.yarnpkg.com/@expo/vector-icons/-/vector-icons-14.1.0.tgz#d3dddad8b6ea60502e0fe5485b86751827606ce4"
+  integrity sha512-7T09UE9h8QDTsUeMGymB4i+iqvtEeaO5VvUjryFB4tugDTG/bkzViWA74hm5pfjjDEhYMXWaX112mcvhccmIwQ==
+
 "@expo/ws-tunnel@^1.0.1":
   version "1.0.6"
   resolved "https://registry.npmjs.org/@expo/ws-tunnel/-/ws-tunnel-1.0.6.tgz"
@@ -1392,12 +1397,31 @@
     use-latest-callback "^0.2.3"
     use-sync-external-store "^1.5.0"
 
+"@react-navigation/drawer@^7.5.5":
+  version "7.5.5"
+  resolved "https://registry.yarnpkg.com/@react-navigation/drawer/-/drawer-7.5.5.tgz#ed449c466140335d2bea49c331250413e0b3adf9"
+  integrity sha512-Bef3FCw0kwoFyFRkUkdY7BTN7nAs1IFOTxDOFQKn7sgYBoHfBr9pdjTpoIhfgIIqUhL+lyMvAP2w0Pr6B6Fbxw==
+  dependencies:
+    "@react-navigation/elements" "^2.6.1"
+    color "^4.2.3"
+    react-native-drawer-layout "^4.1.12"
+    use-latest-callback "^0.2.4"
+
 "@react-navigation/elements@^2.4.2":
   version "2.4.2"
   resolved "https://registry.npmjs.org/@react-navigation/elements/-/elements-2.4.2.tgz"
   integrity sha512-cudKLsRtOB+i8iDzfBKypdqiHsDy1ruqCfYAtwKEclDmLsxu3/90YXoBtoPyFNyIpsn3GtsJzZsrYWQh78xSWg==
   dependencies:
     color "^4.2.3"
+
+"@react-navigation/elements@^2.6.1":
+  version "2.6.1"
+  resolved "https://registry.yarnpkg.com/@react-navigation/elements/-/elements-2.6.1.tgz#c101f0b72b48024c8fe3ee09eccb871fa398f761"
+  integrity sha512-kVbIo+5FaqJv6MiYUR6nQHiw+10dmmH/P10C29wrH9S6fr7k69fImHGeiOI/h7SMDJ2vjWhftyEjqYO+c2LG/w==
+  dependencies:
+    color "^4.2.3"
+    use-latest-callback "^0.2.4"
+    use-sync-external-store "^1.5.0"
 
 "@react-navigation/native-stack@^7.3.13":
   version "7.3.13"
@@ -4164,6 +4188,13 @@ react-native-chart-kit@^6.12.0:
     paths-js "^0.4.10"
     point-in-polygon "^1.0.1"
 
+react-native-drawer-layout@^4.1.12:
+  version "4.1.12"
+  resolved "https://registry.yarnpkg.com/react-native-drawer-layout/-/react-native-drawer-layout-4.1.12.tgz#0cdfe2d2ca9288cb099f1e1808c8addf2fad25de"
+  integrity sha512-oKolvp5seiUieG+RHGjpFe8rH8Ds24iW0QBl31TlCVOX7tdn42IQIBl5tuD1i7h3q+VqqnbcT+NB2dcJ5suZkw==
+  dependencies:
+    use-latest-callback "^0.2.4"
+
 react-native-edge-to-edge@1.6.0:
   version "1.6.0"
   resolved "https://registry.npmjs.org/react-native-edge-to-edge/-/react-native-edge-to-edge-1.6.0.tgz"
@@ -4973,6 +5004,11 @@ use-latest-callback@^0.2.3:
   version "0.2.3"
   resolved "https://registry.npmjs.org/use-latest-callback/-/use-latest-callback-0.2.3.tgz"
   integrity sha512-7vI3fBuyRcP91pazVboc4qu+6ZqM8izPWX9k7cRnT8hbD5svslcknsh3S9BUhaK11OmgTV4oWZZVSeQAiV53SQ==
+
+use-latest-callback@^0.2.4:
+  version "0.2.4"
+  resolved "https://registry.yarnpkg.com/use-latest-callback/-/use-latest-callback-0.2.4.tgz#35c0f028f85a3f4cf025b06011110e87cc18f57e"
+  integrity sha512-LS2s2n1usUUnDq4oVh1ca6JFX9uSqUncTfAm44WMg0v6TxL7POUTk1B044NH8TeLkFbNajIsgDHcgNpNzZucdg==
 
 use-sync-external-store@^1.4.0, use-sync-external-store@^1.5.0:
   version "1.5.0"

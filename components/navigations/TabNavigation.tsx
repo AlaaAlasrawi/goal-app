@@ -3,16 +3,16 @@ import { TouchableOpacity, Text, StyleSheet } from "react-native";
 
 import { createBottomTabNavigator } from "@react-navigation/bottom-tabs";
 import { MaterialCommunityIcons } from "@expo/vector-icons";
-import { useTheme } from "../hooks/ThemeContext";
-import { TabRoutes } from "../hooks/types";
+import { useTheme } from "../../hooks/ThemeContext";
+import { TabRoutes } from "../../hooks/types";
 
-import HomePage from "../pages/HomePage";
-import GoalPage from "../pages/GoalPage";
-import DashboardPage from "../pages/DashboardPage";
+import HomePage from "../../pages/HomePage";
+import GoalPage from "../../pages/GoalPage";
+import DashboardPage from "../../pages/DashboardPage";
 
 const Tab = createBottomTabNavigator<TabRoutes>();
 
-const MainNavigation = () => {
+const TabNavigation = () => {
   const { theme, toggleTheme } = useTheme();
 
   const Dummy = () => null;
@@ -39,12 +39,22 @@ const MainNavigation = () => {
             />
           );
         },
-        headerShown: false,
+        headerShown: true,
+        headerStyle: {
+          backgroundColor: theme.surface,
+        },
+        headerTintColor: theme.text,
+        headerTitleStyle: {
+          color: theme.text,
+        },
         tabBarActiveTintColor: theme.primary,
         tabBarInactiveTintColor: "gray",
         tabBarStyle: {
           backgroundColor: theme.surface,
           borderTopColor: "transparent",
+        },
+        tabBarLabelStyle: {
+          fontSize: 13,
         },
       })}
     >
@@ -75,7 +85,7 @@ const MainNavigation = () => {
                 />
                 <Text
                   style={{
-                    fontSize: 12,
+                    fontSize: 13,
                     color: isActive ? theme.primary : "gray",
                     marginTop: 2,
                   }}
@@ -91,11 +101,12 @@ const MainNavigation = () => {
   );
 };
 
-export default MainNavigation;
+export default TabNavigation;
 
 const styles = StyleSheet.create({
   center: {
     alignItems: "center",
     justifyContent: "center",
+    paddingTop: 10,
   },
 });

@@ -1,6 +1,6 @@
-import React from "react";
-import { View, Text, StyleSheet } from "react-native";
-import { MaterialCommunityIcons } from "@expo/vector-icons";
+import React, { useState } from "react";
+import { View, Text, StyleSheet, TouchableOpacity } from "react-native";
+import { Ionicons, MaterialCommunityIcons } from "@expo/vector-icons";
 import { useTheme } from "../hooks/ThemeContext";
 
 const Header = () => {

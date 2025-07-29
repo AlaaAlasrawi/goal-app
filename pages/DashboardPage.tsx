@@ -11,7 +11,6 @@ const DashboardPage = () => {
     <ScrollView
       style={[styles.container, { backgroundColor: theme.background }]}
     >
-      <Header />
       <Text style={[styles.heading, { color: theme.text }]}>
         📊 Goal Ratings
       </Text>

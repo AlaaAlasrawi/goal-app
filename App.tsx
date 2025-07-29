@@ -1,15 +1,7 @@
 import React from "react";
-import { ThemeProvider } from "./hooks/ThemeContext";
-import AppContent from "./AppContent";
-import { Provider } from "react-redux";
+import InnerWrapper from "./components/wrappers/InnerWrapper";
 import store from "./redux/store";
 
 export default function App() {
-  return (
-    <Provider store={store}>
-      <ThemeProvider>
-        <AppContent />
-      </ThemeProvider>
-    </Provider>
-  );
+  return <InnerWrapper store={store} />;
 }

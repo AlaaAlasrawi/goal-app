@@ -44,7 +44,6 @@ const GoalPage = () => {
 
   return (
     <ScrollView style={styles.scroll}>
-      <Header />
       <View style={styles.container}>
         <GoalInput handleAddGoal={handleAddGoal} />
         {goals.map((goal, index) => (
