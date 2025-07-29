@@ -10,14 +10,13 @@ import { lightTheme, darkTheme } from "../theme/theme";
 
 type ThemeContextType = {
   theme: any;
+  isDark: boolean;
   colorTheme: boolean;
   toggleTheme: () => void;
   backgroundAnim: Animated.Value;
 };
 
-export const ThemeContext = createContext<ThemeContextType | undefined>(
-  undefined
-);
+const ThemeContext = createContext<ThemeContextType | undefined>(undefined);
 
 export const ThemeProvider = ({ children }: { children: React.ReactNode }) => {
   const colorScheme = useColorScheme();
@@ -26,11 +25,11 @@ export const ThemeProvider = ({ children }: { children: React.ReactNode }) => {
   const backgroundAnim = useRef(new Animated.Value(colorTheme ? 1 : 0)).current;
 
   const theme = colorTheme ? darkTheme : lightTheme;
+  const isDark = colorTheme;
 
   const toggleTheme = () => {
     const newTheme = !colorTheme;
     setColorTheme(newTheme);
-
     Animated.timing(backgroundAnim, {
       toValue: newTheme ? 1 : 0,
       duration: 400,
@@ -48,7 +47,7 @@ export const ThemeProvider = ({ children }: { children: React.ReactNode }) => {
 
   return (
     <ThemeContext.Provider
-      value={{ theme, colorTheme, toggleTheme, backgroundAnim }}
+      value={{ theme, isDark, colorTheme, toggleTheme, backgroundAnim }}
     >
       {children}
     </ThemeContext.Provider>
@@ -57,6 +56,8 @@ export const ThemeProvider = ({ children }: { children: React.ReactNode }) => {
 
 export const useTheme = () => {
   const context = useContext(ThemeContext);
-  if (!context) throw new Error("useTheme must be used within ThemeProvider");
+  if (!context) {
+    throw new Error("useTheme must be used within ThemeProvider");
+  }
   return context;
 };
