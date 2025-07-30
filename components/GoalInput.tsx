@@ -1,60 +1,71 @@
 import React, { useState } from "react";
-import { StyleSheet, Text, View } from "react-native";
-import { Button, TextInput } from "react-native-paper";
-import { useTheme } from "../hooks/ThemeContext";
+import {
+  View,
+  TextInput,
+  TouchableOpacity,
+  StyleSheet,
+  Keyboard,
+} from "react-native";
+import { Ionicons } from "@expo/vector-icons";
 
-interface GoalInputProps {
-  handleAddGoal: (input: string) => void;
-}
+type Props = {
+  theme: any;
+  onAdd: (title: string) => void;
+};
 
-const GoalInput = ({ handleAddGoal }: GoalInputProps) => {
-  const [input, setInput] = useState<string>("");
-  const { theme } = useTheme();
+const GoalInput = ({ theme, onAdd }: Props) => {
+  const [inputValue, setInputValue] = useState("");
+  const styles = createStyles(theme);
 
-  const styles = StyleSheet.create({
-    text: {
-      color: theme.text,
-      fontSize: 16,
-      marginBottom: 12,
-    },
-    input: {
-      marginBottom: 16,
-      overflow: "hidden",
-      elevation: 2,
-      backgroundColor: theme.surface,
-    },
-    button: { marginBottom: 24 },
-  });
+  const handleSubmit = () => {
+    const trimmed = inputValue.trim();
+    if (!trimmed) return;
+    onAdd(trimmed);
+    setInputValue("");
+    Keyboard.dismiss();
+  };
 
   return (
-    <View>
-      <Text style={styles.text}>Enter your goal:</Text>
-
+    <View style={styles.container}>
       <TextInput
-        mode="outlined"
-        value={input}
-        onChangeText={setInput}
-        placeholder="e.g. Finish my project"
-        style={styles.input}
-        activeOutlineColor={theme.primary}
-        textColor={theme.text}
+        value={inputValue}
+        onChangeText={setInputValue}
+        placeholder="Enter goal title"
         placeholderTextColor={theme.placeholder}
+        style={styles.input}
+        onSubmitEditing={handleSubmit}
       />
-
-      <Button
-        mode="contained"
-        onPress={() => {
-          handleAddGoal(input);
-          setInput("");
-        }}
-        style={styles.button}
-        buttonColor={theme.primary}
-        labelStyle={{ color: theme.onPrimary }}
-      >
-        Add Goal
-      </Button>
+      <TouchableOpacity onPress={handleSubmit} style={styles.addButton}>
+        <Ionicons name="add" size={24} color={theme.onPrimary} />
+      </TouchableOpacity>
     </View>
   );
 };
+
+const createStyles = (theme: any) =>
+  StyleSheet.create({
+    container: {
+      marginBottom: 16,
+    },
+    input: {
+      borderWidth: 1,
+      borderRadius: 8,
+      paddingHorizontal: 12,
+      height: 48,
+      fontSize: 16,
+      backgroundColor: theme.surface,
+      color: theme.text,
+      borderColor: theme.placeholder,
+    },
+    addButton: {
+      marginTop: 10,
+      width: "100%",
+      height: 48,
+      borderRadius: 8,
+      alignItems: "center",
+      justifyContent: "center",
+      backgroundColor: theme.secondary,
+    },
+  });
 
 export default GoalInput;

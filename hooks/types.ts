@@ -4,8 +4,16 @@ export type TabRoutes = {
   Goals: undefined;
   Setting: undefined;
 };
+export type Goal = {
+  id: number;
+  title: string;
+  description?: string;
+  completed: boolean;
+  createdAt: string;
+};
+
 export type RootStackParamList = {
   Root: undefined;
   Login: undefined;
-  GoalDetails: { goal: string };
+  GoalsPage: { goal: string };
 };

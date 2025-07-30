@@ -5,9 +5,9 @@ import { MaterialCommunityIcons } from "@expo/vector-icons";
 import { useTheme } from "../../hooks/ThemeContext";
 import { TabRoutes } from "../../hooks/types";
 import HomePage from "../../pages/HomePage";
-import GoalPage from "../../pages/GoalPage";
 import DashboardPage from "../../pages/DashboardPage";
 import SettingPage from "../../pages/SettingPage";
+import GoalsPage from "../../pages/GoalsPage";
 
 const Tab = createBottomTabNavigator<TabRoutes>();
 
@@ -47,7 +47,7 @@ const TabNavigation = () => {
       })}
     >
       <Tab.Screen name="Home" component={HomePage} />
-      <Tab.Screen name="Goals" component={GoalPage} />
+      <Tab.Screen name="Goals" component={GoalsPage} />
       <Tab.Screen name="Dashboard" component={DashboardPage} />
       <Tab.Screen name="Setting" component={SettingPage} />
     </Tab.Navigator>

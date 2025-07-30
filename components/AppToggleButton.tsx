@@ -4,7 +4,7 @@ import { MaterialCommunityIcons } from "@expo/vector-icons"; // or react-native-
 import { useTheme } from "../hooks/ThemeContext";
 
 const AppToggleButton = () => {
-  const { isDark, toggleTheme } = useTheme();
+  const { theme, isDark, toggleTheme } = useTheme();
 
   return (
     <TouchableOpacity onPress={toggleTheme} activeOpacity={0.8}>
@@ -17,7 +17,7 @@ const AppToggleButton = () => {
           },
         ]}
       >
-        <View style={[styles.iconContainer, { backgroundColor: "#3B4CCA" }]}>
+        <View style={[styles.iconContainer, { backgroundColor: theme.toggle }]}>
           <MaterialCommunityIcons
             name={isDark ? "moon-waning-crescent" : "white-balance-sunny"}
             color="white"
