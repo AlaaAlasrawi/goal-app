@@ -9,7 +9,7 @@ type Props = {
 };
 
 const GoalsBarChart = ({ data, title = "📊 Goals Completed" }: Props) => {
-  const { theme } = useTheme();
+  const { theme, isDark } = useTheme();
   const styles = getStyles(theme);
   const screenWidth = Dimensions.get("window").width;
 
@@ -19,8 +19,8 @@ const GoalsBarChart = ({ data, title = "📊 Goals Completed" }: Props) => {
   };
 
   const chartConfig = {
-    backgroundGradientFrom: theme.background,
-    backgroundGradientTo: theme.background,
+    backgroundGradientFrom: theme.surface,
+    backgroundGradientTo: isDark ? theme.background : theme.surface,
     decimalPlaces: 0,
     color: () => theme.primary,
     labelColor: () => theme.placeholder,
@@ -53,23 +53,25 @@ const GoalsBarChart = ({ data, title = "📊 Goals Completed" }: Props) => {
 const getStyles = (theme: any) =>
   StyleSheet.create({
     chartContainer: {
-      borderRadius: 12,
+      backgroundColor: theme.surface,
+      padding: 20,
+      borderRadius: 10,
       marginTop: 10,
       elevation: 3,
-      backgroundColor: theme.card,
       shadowColor: "#000",
       shadowOffset: { width: 0, height: 1 },
       shadowOpacity: 0.1,
       shadowRadius: 2,
     },
     title: {
-      fontSize: 16,
+      fontSize: 18,
       fontWeight: "bold",
-      marginBottom: 12,
+      marginBottom: 15,
       color: theme.text,
     },
     chartStyle: {
       borderRadius: 12,
+      alignSelf: "center",
     },
   });
 
