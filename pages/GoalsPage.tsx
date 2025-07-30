@@ -9,10 +9,10 @@ import { Goal } from "../hooks/types";
 const STORAGE_KEY = "goals";
 
 const GoalsPage = () => {
+  const [goals, setGoals] = useState<Goal[]>([]);
+
   const { theme } = useTheme();
   const styles = createStyles(theme);
-
-  const [goals, setGoals] = useState<Goal[]>([]);
 
   useEffect(() => {
     const loadGoals = async () => {

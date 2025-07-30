@@ -3,6 +3,7 @@ export type TabRoutes = {
   Home: undefined;
   Goals: undefined;
   Setting: undefined;
+  LoginPage: undefined;
 };
 export type Goal = {
   id: number;
@@ -13,7 +14,7 @@ export type Goal = {
 };
 
 export type RootStackParamList = {
-  Root: undefined;
-  Login: undefined;
+  Main: undefined;
+  LoginPage: undefined;
   GoalsPage: { goal: string };
 };
