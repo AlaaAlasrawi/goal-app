@@ -5,6 +5,8 @@ import {
   TouchableOpacity,
   StyleSheet,
   Keyboard,
+  NativeSyntheticEvent,
+  TextInputFocusEventData,
 } from "react-native";
 import { Ionicons } from "@expo/vector-icons";
 
@@ -15,7 +17,8 @@ type Props = {
 
 const GoalInput = ({ theme, onAdd }: Props) => {
   const [inputValue, setInputValue] = useState("");
-  const styles = createStyles(theme);
+  const [focused, setFocused] = useState(false);
+  const styles = createStyles(theme, focused);
 
   const handleSubmit = () => {
     const trimmed = inputValue.trim();
@@ -26,7 +29,7 @@ const GoalInput = ({ theme, onAdd }: Props) => {
   };
 
   return (
-    <View style={styles.container}>
+    <View style={styles.wrapper}>
       <TextInput
         value={inputValue}
         onChangeText={setInputValue}
@@ -34,6 +37,8 @@ const GoalInput = ({ theme, onAdd }: Props) => {
         placeholderTextColor={theme.placeholder}
         style={styles.input}
         onSubmitEditing={handleSubmit}
+        onFocus={() => setFocused(true)}
+        onBlur={() => setFocused(false)}
       />
       <TouchableOpacity onPress={handleSubmit} style={styles.addButton}>
         <Ionicons name="add" size={24} color={theme.onPrimary} />
@@ -42,29 +47,37 @@ const GoalInput = ({ theme, onAdd }: Props) => {
   );
 };
 
-const createStyles = (theme: any) =>
+const createStyles = (theme: any, focused: boolean) =>
   StyleSheet.create({
-    container: {
+    wrapper: {
+      flexDirection: "row",
+      alignItems: "center",
+      backgroundColor: theme.surface,
+      borderRadius: 12,
+      paddingHorizontal: 12,
+      paddingVertical: 6,
       marginBottom: 16,
+      elevation: 2,
+      shadowColor: "#000",
+      shadowOffset: { width: 0, height: 1 },
+      shadowOpacity: 0.1,
+      shadowRadius: 2,
+      borderWidth: focused ? 1.5 : 0,
+      borderColor: focused ? theme.primary : "transparent",
     },
     input: {
-      borderWidth: 1,
-      borderRadius: 8,
-      paddingHorizontal: 12,
-      height: 48,
+      flex: 1,
       fontSize: 16,
-      backgroundColor: theme.surface,
       color: theme.text,
-      borderColor: theme.placeholder,
+      paddingVertical: 10,
     },
     addButton: {
-      marginTop: 10,
-      width: "100%",
-      height: 48,
+      marginLeft: 10,
+      backgroundColor: theme.secondary,
+      padding: 10,
       borderRadius: 8,
       alignItems: "center",
       justifyContent: "center",
-      backgroundColor: theme.secondary,
     },
   });
 

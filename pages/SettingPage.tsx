@@ -28,8 +28,8 @@ const SettingPage = () => {
     const loadUserInfo = async () => {
       const storedUsername = await AsyncStorage.getItem("username");
       const storedName = await AsyncStorage.getItem("name");
-      setUsername(storedUsername ?? "N/A");
-      setName(storedName ?? "N/A");
+      setUsername(storedUsername ?? "angle_44");
+      setName(storedName ?? "Angle Sam");
     };
 
     loadUserInfo();

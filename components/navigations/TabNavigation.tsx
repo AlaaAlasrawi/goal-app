@@ -43,7 +43,7 @@ const TabNavigation = () => {
           backgroundColor: theme.surface,
           borderTopColor: "transparent",
         },
-        tabBarLabelStyle: { fontSize: 13 },
+        tabBarLabelStyle: { fontSize: 11 },
       })}
     >
       <Tab.Screen name="Home" component={HomePage} />

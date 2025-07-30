@@ -3,7 +3,7 @@ import { NavigationContainer } from "@react-navigation/native";
 import { useTheme } from "../../hooks/ThemeContext";
 import { createNativeStackNavigator } from "@react-navigation/native-stack";
 import TabNavigation from "../navigations/TabNavigation";
-import LoginPage from "../../pages/LoginPage"; // ✅ Import the login page
+import LoginPage from "../../pages/LoginPage";
 import { RootStackParamList } from "../../hooks/types";
 import { StatusBar } from "expo-status-bar";
 
