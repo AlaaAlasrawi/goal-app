@@ -1,40 +1,45 @@
-import { ScrollView, StyleSheet } from "react-native";
-import { Text } from "react-native-paper";
+import React from "react";
+import { ScrollView } from "react-native";
 import { useTheme } from "../hooks/ThemeContext";
-import Header from "../components/Header";
-import DonutPieChart from "../components/charts/DonutPieChart";
+import { Goal } from "../hooks/types";
+import UserInfoCard from "../components/dashboard/UserInfoCard";
+import RecentlyCreatedGoals from "../components/dashboard/RecentlyCreatedGoals";
+import GoalsBarChart from "../components/dashboard/GoalsBarChart";
+
+const mockGoals: Goal[] = [
+  {
+    id: 1,
+    title: "Study React Native",
+    completed: false,
+    createdAt: new Date().toISOString(),
+    description: "Learn components and hooks",
+  },
+  {
+    id: 2,
+    title: "Read 20 pages 📚",
+    completed: false,
+    createdAt: new Date(Date.now() - 86400000).toISOString(),
+    description: "Book: Atomic Habits",
+  },
+  // Add more mock goals here...
+];
+
+const goalsBarData = [
+  { label: "Mon", value: 2 },
+  { label: "Tue", value: 1 },
+  { label: "Wed", value: 3 },
+];
 
 const DashboardPage = () => {
   const { theme } = useTheme();
 
   return (
-    <ScrollView
-      style={[styles.container, { backgroundColor: theme.background }]}
-    >
-      <Text style={[styles.heading, { color: theme.text }]}>
-        📊 Goal Ratings
-      </Text>
-      <DonutPieChart />
+    <ScrollView style={{ backgroundColor: theme.background, padding: 16 }}>
+      <GoalsBarChart data={goalsBarData} />
+      <UserInfoCard totalGoals={10} completedGoals={6} streaks={3} />
+      <RecentlyCreatedGoals goals={mockGoals} />
     </ScrollView>
   );
 };
 
 export default DashboardPage;
-
-const styles = StyleSheet.create({
-  container: {
-    flex: 1,
-  },
-  heading: {
-    fontSize: 20,
-    fontWeight: "600",
-    textAlign: "center",
-    marginTop: 30,
-    marginBottom: 16,
-  },
-  chart: {
-    paddingLeft: 15,
-    borderRadius: 12,
-    marginBottom: 30,
-  },
-});

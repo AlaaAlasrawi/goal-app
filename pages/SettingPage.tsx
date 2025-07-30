@@ -10,11 +10,13 @@ import {
 import { NavigationProp, useNavigation } from "@react-navigation/native";
 import AsyncStorage from "@react-native-async-storage/async-storage";
 import { useTheme } from "../hooks/ThemeContext";
-import AppToggleButton from "../components/AppToggleButton";
+
 import { Button } from "react-native-paper";
-import SettingItem from "../components/SettingItem";
+
 import { TabRoutes } from "../hooks/types";
 import LoginPage from "./LoginPage";
+import SettingItem from "../components/SettingItem";
+import AppToggleButton from "../components/AppToggleButton";
 
 const SettingPage = () => {
   const [username, setUsername] = useState<string | undefined>();

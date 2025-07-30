@@ -5,19 +5,13 @@ import { PaperProvider } from "react-native-paper";
 import { ThemeProvider } from "../../hooks/ThemeContext";
 import NavigationWrapper from "./NavigationWrapper";
 
-interface InnerWrapperProps {
-  store: any;
-}
-
-const InnerWrapper = ({ store }: InnerWrapperProps) => {
+const InnerWrapper = () => {
   return (
-    <Provider store={store}>
-      <ThemeProvider>
-        <PaperProvider>
-          <NavigationWrapper />
-        </PaperProvider>
-      </ThemeProvider>
-    </Provider>
+    <ThemeProvider>
+      <PaperProvider>
+        <NavigationWrapper />
+      </PaperProvider>
+    </ThemeProvider>
   );
 };
 
