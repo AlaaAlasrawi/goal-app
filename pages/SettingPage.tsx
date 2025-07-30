@@ -11,10 +11,11 @@ import { useNavigation } from "@react-navigation/native";
 import AsyncStorage from "@react-native-async-storage/async-storage";
 import { useTheme } from "../hooks/ThemeContext";
 import AppToggleButton from "../components/AppToggleButton";
+import { Button } from "react-native-paper";
+import SettingItem from "../components/SettingItem";
 
 const SettingPage = () => {
-  const navigation = useNavigation();
-  const { theme, toggleTheme } = useTheme();
+  const { theme } = useTheme();
 
   const [username, setUsername] = useState<string | undefined>();
   const [name, setName] = useState<string | undefined>();
@@ -45,57 +46,49 @@ const SettingPage = () => {
     ]);
   };
 
+  const styles = StyleSheet.create({
+    container: {
+      flex: 1,
+      padding: 20,
+      backgroundColor: theme.background,
+      minHeight: "100%",
+      flexGrow: 1,
+    },
+    logoutButton: {
+      backgroundColor: "#ff3b30",
+      padding: 3.5,
+      borderRadius: 8,
+      alignItems: "center",
+      justifyContent: "center",
+      marginTop: 16,
+    },
+    logoutText: {
+      color: "white",
+      fontSize: 16,
+      fontWeight: "bold",
+    },
+  });
+
   return (
-    <View style={[styles.container, { backgroundColor: theme.background }]}>
-      <Text style={[styles.label, { color: theme.text }]}>Username</Text>
-      <Text style={[styles.value, { color: theme.text }]}>{username}</Text>
+    <View style={styles.container}>
+      <SettingItem label="Username" value={username} />
+      <SettingItem label="Name" value={name} />
+      <SettingItem
+        label="Dark Mode"
+        actionComponent={<AppToggleButton />}
+        actionStyle={{ marginTop: 10 }}
+      />
 
-      <Text style={[styles.label, { color: theme.text }]}>Name</Text>
-      <Text style={[styles.value, { color: theme.text }]}>{name}</Text>
-
-      <View style={styles.switchContainer}>
-        <Text style={[styles.label, { color: theme.text }]}>Dark Mode</Text>
-        <AppToggleButton />
-      </View>
-
-      <TouchableOpacity style={styles.logoutButton} onPress={handleLogout}>
-        <Text style={styles.logoutText}>Logout</Text>
-      </TouchableOpacity>
+      <Button
+        mode="contained"
+        onPress={handleLogout}
+        style={styles.logoutButton}
+        labelStyle={styles.logoutText}
+      >
+        Logout
+      </Button>
     </View>
   );
 };
-const styles = StyleSheet.create({
-  container: {
-    flex: 1,
-    padding: 20,
-  },
-  label: {
-    fontSize: 16,
-    fontWeight: "500",
-    marginTop: 20,
-  },
-  value: {
-    fontSize: 18,
-    marginTop: 4,
-  },
-  switchContainer: {
-    flexDirection: "row",
-    justifyContent: "space-between",
-    alignItems: "center",
-    marginTop: 30,
-  },
-  logoutButton: {
-    marginTop: 40,
-    padding: 15,
-    backgroundColor: "#e74c3c",
-    borderRadius: 10,
-    alignItems: "center",
-  },
-  logoutText: {
-    color: "white",
-    fontSize: 16,
-    fontWeight: "bold",
-  },
-});
 
 export default SettingPage;
