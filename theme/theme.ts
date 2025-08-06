@@ -12,6 +12,7 @@ export const lightTheme = {
   onBackground: "#000000",
   onSurface: "#000000",
   placeholder: "#888888",
+  label: "#1C1C1E",
   toggle: "#3B4CCA",
 } as const;
 
@@ -29,5 +30,6 @@ export const darkTheme = {
   onBackground: "#FFFFFF",
   onSurface: "#FFFFFF",
   placeholder: "#AAAAAA",
+  label: "#AAAAAA",
   toggle: "#3B4CCA",
 } as const;

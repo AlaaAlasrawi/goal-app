@@ -10,6 +10,8 @@ export type Goal = {
   title: string;
   description?: string;
   completed: boolean;
+  category?: string;
+  dueDate?: string;
   createdAt: string;
 };
 

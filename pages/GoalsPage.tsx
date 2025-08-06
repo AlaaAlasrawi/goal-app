@@ -1,15 +1,26 @@
 import React, { useState, useEffect } from "react";
-import { View, Text, FlatList, Alert, StyleSheet } from "react-native";
+import {
+  View,
+  Text,
+  FlatList,
+  Alert,
+  StyleSheet,
+  Modal,
+  TouchableOpacity,
+} from "react-native";
 import { useTheme } from "../hooks/ThemeContext";
 import AsyncStorage from "@react-native-async-storage/async-storage";
 import GoalItem from "../components/GoalItem";
-import GoalInput from "../components/GoalInput";
+
 import { Goal } from "../hooks/types";
+import { Ionicons } from "@expo/vector-icons";
+import GoalModal from "../components/GoalModal";
 
 const STORAGE_KEY = "goals";
 
 const GoalsPage = () => {
   const [goals, setGoals] = useState<Goal[]>([]);
+  const [modalVisible, setModalVisible] = useState(false);
 
   const { theme } = useTheme();
   const styles = createStyles(theme);
@@ -26,14 +37,20 @@ const GoalsPage = () => {
     AsyncStorage.setItem(STORAGE_KEY, JSON.stringify(goals));
   }, [goals]);
 
-  const handleAddGoal = (title: string) => {
-    const goal: Goal = {
+  const handleAddGoal = (
+    goalData: Omit<Goal, "id" | "createdAt" | "completed">
+  ) => {
+    const newGoal: Goal = {
       id: Date.now(),
-      title,
+      title: goalData.title,
+      description: goalData.description,
+      category: goalData.category,
+      dueDate: goalData.dueDate,
       completed: false,
       createdAt: new Date().toISOString(),
     };
-    setGoals([goal, ...goals]);
+    setGoals([newGoal, ...goals]);
+    setModalVisible(false);
   };
 
   const toggleGoal = (id: number) => {
@@ -71,10 +88,18 @@ const GoalsPage = () => {
     <View style={styles.container}>
       <Text style={styles.header}>My Goals</Text>
 
-      <GoalInput theme={theme} onAdd={handleAddGoal} />
+      <TouchableOpacity
+        onPress={() => setModalVisible(true)}
+        style={styles.addButton}
+      >
+        <Ionicons name="add-circle-outline" size={28} color={theme.primary} />
+        <Text style={styles.addText}>Add New Goal</Text>
+      </TouchableOpacity>
 
       {goals.length === 0 ? (
-        <Text style={styles.emptyText}>No goals yet. Add one above!</Text>
+        <Text style={styles.emptyText}>
+          No goals yet. Press the button above!
+        </Text>
       ) : (
         <FlatList
           data={sortedGoals}
@@ -83,6 +108,13 @@ const GoalsPage = () => {
           contentContainerStyle={{ paddingBottom: 40 }}
         />
       )}
+
+      <GoalModal
+        visible={modalVisible}
+        onClose={() => setModalVisible(false)}
+        onSubmit={handleAddGoal}
+        theme={theme}
+      />
     </View>
   );
 };
@@ -103,6 +135,19 @@ const createStyles = (theme: any) =>
     emptyText: {
       color: theme.placeholder,
       marginTop: 30,
+      fontSize: 16,
+      textAlign: "center",
+    },
+    addButton: {
+      flexDirection: "row",
+      alignItems: "center",
+      marginBottom: 20,
+    },
+    addText: {
+      marginLeft: 10,
+      fontSize: 18,
+      fontWeight: "600",
+      color: theme.primary,
     },
   });
 
