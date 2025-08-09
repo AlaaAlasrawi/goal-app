@@ -6,8 +6,8 @@ import { Goal } from "../hooks/types";
 interface GoalItemProps {
   goal: Goal;
   theme: any;
-  onToggle: (id: string, goal: Goal) => void;
-  onDelete: (id: string) => void;
+  onToggle: (id: number, goal: Goal) => void;
+  onDelete: (id: number) => void;
 }
 
 const GoalItem = ({ goal, theme, onToggle, onDelete }: GoalItemProps) => {

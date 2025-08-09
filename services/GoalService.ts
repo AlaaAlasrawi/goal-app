@@ -14,7 +14,7 @@ class GoalService {
     return JSON.parse((await AsyncStorage.getItem("goals")) ?? "[]");
   }
 
-  public async deleteGoal(goalId: string): Promise<void> {
+  public async deleteGoal(goalId: number): Promise<void> {
     const goals: Goal[] = JSON.parse(
       (await AsyncStorage.getItem("goals")) ?? "[]"
     );
@@ -22,7 +22,22 @@ class GoalService {
     await AsyncStorage.setItem("goals", JSON.stringify(updatedGoals));
   }
 
-  public async updateGoal(id: string, updatedGoal: Goal): Promise<void> {
+  public async toggleGoal(id: number) {
+    const goals: Goal[] = JSON.parse(
+      (await AsyncStorage.getItem("goals")) ?? "[]"
+    );
+    const goalIndex = goals.findIndex((goal) => goal.id === id);
+
+    if (goalIndex !== -1) {
+      goals[goalIndex] = {
+        ...goals[goalIndex],
+        completed: !goals[goalIndex].completed,
+      };
+      await AsyncStorage.setItem("goals", JSON.stringify(goals));
+    }
+  }
+
+  public async updateGoal(id: number, updatedGoal: Goal): Promise<void> {
     const goals: Goal[] = JSON.parse(
       (await AsyncStorage.getItem("goals")) ?? "[]"
     );

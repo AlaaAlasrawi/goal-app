@@ -34,7 +34,7 @@ const GoalsPage = () => {
     goalData: Omit<Goal, "id" | "createdAt" | "completed">
   ) => {
     const newGoal: Goal = {
-      id: Math.random().toString(),
+      id: Math.random(),
       title: goalData.title,
       description: goalData.description,
       category: goalData.category,
@@ -48,12 +48,12 @@ const GoalsPage = () => {
     setModalVisible(false);
   };
 
-  const toggleGoal = async (id: string, goal: Goal) => {
-    await GoalService.updateGoal(id, { ...goal, completed: !goal.completed });
+  const toggleGoal = async (id: number) => {
+    await GoalService.toggleGoal(id);
     setRefresh((pre) => pre + 1);
   };
 
-  const deleteGoal = (id: string) => {
+  const deleteGoal = (id: number) => {
     Alert.alert("Delete Goal", "Are you sure you want to delete this goal?", [
       { text: "Cancel", style: "cancel" },
       {
