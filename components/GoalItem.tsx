@@ -6,8 +6,8 @@ import { Goal } from "../hooks/types";
 interface GoalItemProps {
   goal: Goal;
   theme: any;
-  onToggle: (id: number) => void;
-  onDelete: (id: number) => void;
+  onToggle: (id: string, goal: Goal) => void;
+  onDelete: (id: string) => void;
 }
 
 const GoalItem = ({ goal, theme, onToggle, onDelete }: GoalItemProps) => {
@@ -15,7 +15,7 @@ const GoalItem = ({ goal, theme, onToggle, onDelete }: GoalItemProps) => {
 
   return (
     <View style={[styles.wrapper, { backgroundColor: theme.surface }]}>
-      <TouchableOpacity onPress={() => onToggle(goal.id)}>
+      <TouchableOpacity onPress={() => onToggle(goal.id, goal)}>
         <Ionicons
           name={goal.completed ? "checkbox-outline" : "square-outline"}
           size={22}
@@ -25,7 +25,7 @@ const GoalItem = ({ goal, theme, onToggle, onDelete }: GoalItemProps) => {
       </TouchableOpacity>
 
       <TouchableOpacity
-        onPress={() => onToggle(goal.id)}
+        onPress={() => onToggle(goal.id, goal)}
         onLongPress={() => onDelete(goal.id)}
         style={{ flex: 1 }}
       >

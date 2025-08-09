@@ -6,7 +6,7 @@ export type TabRoutes = {
   LoginPage: undefined;
 };
 export type Goal = {
-  id: number;
+  id: string;
   title: string;
   description?: string;
   completed: boolean;

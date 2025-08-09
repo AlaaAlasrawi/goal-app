@@ -9,39 +9,32 @@ import {
   TouchableOpacity,
 } from "react-native";
 import { useTheme } from "../hooks/ThemeContext";
-import AsyncStorage from "@react-native-async-storage/async-storage";
 import GoalItem from "../components/GoalItem";
-
 import { Goal } from "../hooks/types";
 import { Ionicons } from "@expo/vector-icons";
 import GoalModal from "../components/GoalModal";
-
-const STORAGE_KEY = "goals";
+import GoalService from "../services/GoalService";
 
 const GoalsPage = () => {
   const [goals, setGoals] = useState<Goal[]>([]);
   const [modalVisible, setModalVisible] = useState(false);
+  const [refresh, setRefresh] = useState(0);
 
   const { theme } = useTheme();
   const styles = createStyles(theme);
 
   useEffect(() => {
     const loadGoals = async () => {
-      const stored = await AsyncStorage.getItem(STORAGE_KEY);
-      if (stored) setGoals(JSON.parse(stored));
+      setGoals(await GoalService.getAllGoals());
     };
     loadGoals();
-  }, []);
+  }, [refresh]);
 
-  useEffect(() => {
-    AsyncStorage.setItem(STORAGE_KEY, JSON.stringify(goals));
-  }, [goals]);
-
-  const handleAddGoal = (
+  const handleAddGoal = async (
     goalData: Omit<Goal, "id" | "createdAt" | "completed">
   ) => {
     const newGoal: Goal = {
-      id: Date.now(),
+      id: Math.random().toString(),
       title: goalData.title,
       description: goalData.description,
       category: goalData.category,
@@ -49,23 +42,27 @@ const GoalsPage = () => {
       completed: false,
       createdAt: new Date().toISOString(),
     };
-    setGoals([newGoal, ...goals]);
+
+    await GoalService.addGoal(newGoal);
+    setRefresh((pre) => pre + 1);
     setModalVisible(false);
   };
 
-  const toggleGoal = (id: number) => {
-    setGoals((prev) =>
-      prev.map((g) => (g.id === id ? { ...g, completed: !g.completed } : g))
-    );
+  const toggleGoal = async (id: string, goal: Goal) => {
+    await GoalService.updateGoal(id, { ...goal, completed: !goal.completed });
+    setRefresh((pre) => pre + 1);
   };
 
-  const deleteGoal = (id: number) => {
+  const deleteGoal = (id: string) => {
     Alert.alert("Delete Goal", "Are you sure you want to delete this goal?", [
       { text: "Cancel", style: "cancel" },
       {
         text: "Delete",
         style: "destructive",
-        onPress: () => setGoals((prev) => prev.filter((g) => g.id !== id)),
+        onPress: async () => {
+          await GoalService.deleteGoal(id);
+          setRefresh((pre) => pre + 1);
+        },
       },
     ]);
   };
