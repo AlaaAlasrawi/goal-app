@@ -7,12 +7,7 @@ import RecentlyCreatedGoals from "../components/dashboard/RecentlyCreatedGoals";
 import GoalsBarChart from "../components/dashboard/GoalsBarChart";
 import GoalService from "../services/GoalService";
 import UserService from "../services/UserService";
-
-const goalsBarData = [
-  { label: "Mon", value: 2 },
-  { label: "Tue", value: 1 },
-  { label: "Wed", value: 3 },
-];
+import GoalsPieChart from "../components/dashboard/GoalsPieChart";
 
 const DashboardPage = () => {
   const { theme } = useTheme();
@@ -32,12 +27,12 @@ const DashboardPage = () => {
 
   return (
     <ScrollView style={{ backgroundColor: theme.background, padding: 16 }}>
-      <GoalsBarChart data={goalsBarData} />
       <UserInfoCard
         totalGoals={goals.length}
         completedGoals={completedGoals}
         streaks={3}
       />
+      <GoalsPieChart completed={completedGoals} total={goals.length} />
       <RecentlyCreatedGoals goals={goals} />
     </ScrollView>
   );

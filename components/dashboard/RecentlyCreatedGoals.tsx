@@ -8,7 +8,7 @@ type Props = {
   limit?: number;
 };
 
-const RecentlyCreatedGoals = ({ goals, limit = 5 }: Props) => {
+const RecentlyCreatedGoals = ({ goals, limit = 3 }: Props) => {
   const { theme } = useTheme();
   const styles = createStyles(theme);
 
