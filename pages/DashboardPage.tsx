@@ -6,6 +6,7 @@ import UserInfoCard from "../components/dashboard/UserInfoCard";
 import RecentlyCreatedGoals from "../components/dashboard/RecentlyCreatedGoals";
 import GoalsBarChart from "../components/dashboard/GoalsBarChart";
 import GoalService from "../services/GoalService";
+import UserService from "../services/UserService";
 
 const goalsBarData = [
   { label: "Mon", value: 2 },
@@ -16,18 +17,27 @@ const goalsBarData = [
 const DashboardPage = () => {
   const { theme } = useTheme();
   const [goals, setGoals] = useState<Goal[]>([]);
+  const [completedGoals, setCompletedGoals] = useState<number>(0);
 
   useEffect(() => {
-    const loadGoals = async () => {
-      setGoals(await GoalService.getAllGoals());
-    };
-    loadGoals();
+    (async () => {
+      const [goalsData, user] = await Promise.all([
+        GoalService.getAllGoals(),
+        UserService.getUserProfile(),
+      ]);
+      setGoals(goalsData);
+      setCompletedGoals(user.noCompletedGoals ?? 0);
+    })();
   }, []);
 
   return (
     <ScrollView style={{ backgroundColor: theme.background, padding: 16 }}>
       <GoalsBarChart data={goalsBarData} />
-      <UserInfoCard totalGoals={goals.length} completedGoals={6} streaks={3} />
+      <UserInfoCard
+        totalGoals={goals.length}
+        completedGoals={completedGoals}
+        streaks={3}
+      />
       <RecentlyCreatedGoals goals={goals} />
     </ScrollView>
   );

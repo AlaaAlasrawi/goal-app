@@ -17,6 +17,7 @@ import { TabRoutes } from "../hooks/types";
 import LoginPage from "./LoginPage";
 import SettingItem from "../components/SettingItem";
 import AppToggleButton from "../components/AppToggleButton";
+import UserService from "../services/UserService";
 
 const SettingPage = () => {
   const [username, setUsername] = useState<string | undefined>();
@@ -28,10 +29,9 @@ const SettingPage = () => {
 
   useEffect(() => {
     const loadUserInfo = async () => {
-      const storedUsername = await AsyncStorage.getItem("username");
-      const storedName = await AsyncStorage.getItem("name");
-      setUsername(storedUsername ?? "angle_44");
-      setName(storedName ?? "Angle Sam");
+      const userData = UserService.getUserProfile();
+      setUsername((await userData).username);
+      setName((await userData).fullName);
     };
 
     loadUserInfo();

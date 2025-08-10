@@ -15,6 +15,13 @@ export type Goal = {
   createdAt: string;
 };
 
+export type AppUser = {
+  username: string;
+  fullName: string;
+  email: string;
+  noCompletedGoals: number;
+};
+
 export type RootStackParamList = {
   Main: undefined;
   LoginPage: undefined;

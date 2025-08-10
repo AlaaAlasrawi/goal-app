@@ -51,6 +51,7 @@ const GoalsPage = () => {
   const toggleGoal = async (id: number) => {
     await GoalService.toggleGoal(id);
     setRefresh((pre) => pre + 1);
+    console.log("toggle");
   };
 
   const deleteGoal = (id: number) => {
