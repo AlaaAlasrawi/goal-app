@@ -37,26 +37,34 @@ class GoalService {
     }
   }
 
-  public async deleteGoal(goalId: number): Promise<void> {
-    const goals: Goal[] = JSON.parse(
-      (await AsyncStorage.getItem("goals")) ?? "[]"
-    );
-    const updatedGoals = goals.filter((goal) => goal.id !== goalId);
-    await AsyncStorage.setItem("goals", JSON.stringify(updatedGoals));
+  public async deleteGoal(goalId: number): Promise<boolean> {
+    try {
+      const promise = await fetch(`${URL}/${goalId}`, {
+        method: "DELETE",
+      });
+      console.log("promise is = " + promise);
+      const response = await promise.json();
+      console.log("response is = " + response);
+      return response;
+    } catch (error) {
+      return false;
+    }
   }
 
-  public async toggleGoal(id: number) {
-    const goals: Goal[] = JSON.parse(
-      (await AsyncStorage.getItem("goals")) ?? "[]"
-    );
-    const goalIndex = goals.findIndex((goal) => goal.id === id);
+  public async toggleGoal(id: number): Promise<boolean> {
+    try {
+      const promise = await fetch(`${URL}/${id}/completed`, {
+        method: "PUT",
+        headers: {
+          "Content-Type": "application/json",
+        },
+      });
+      const response = promise.json();
+      return response;
+    } catch (error) {
+      console.log(error);
 
-    if (goalIndex !== -1) {
-      goals[goalIndex] = {
-        ...goals[goalIndex],
-        completed: !goals[goalIndex].completed,
-      };
-      await AsyncStorage.setItem("goals", JSON.stringify(goals));
+      return false;
     }
   }
 
