@@ -9,7 +9,7 @@ export type Goal = {
   id: number;
   title: string;
   description?: string;
-  completed: boolean;
+  isCompleted: boolean;
   category?: string;
   dueDate?: string;
   createdAt: string;

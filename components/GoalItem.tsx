@@ -26,9 +26,9 @@ const GoalItem = ({
     <View style={[styles.wrapper, { backgroundColor: theme.surface }]}>
       <TouchableOpacity onPress={() => onToggle(goal.id)}>
         <Ionicons
-          name={goal.completed ? "checkbox-outline" : "square-outline"}
+          name={goal.isCompleted ? "checkbox-outline" : "square-outline"}
           size={22}
-          color={goal.completed ? theme.primary : theme.placeholder}
+          color={goal.isCompleted ? theme.primary : theme.placeholder}
           style={styles.checkboxIcon}
         />
       </TouchableOpacity>
@@ -43,8 +43,8 @@ const GoalItem = ({
             styles.goalText,
             {
               color: theme.text,
-              textDecorationLine: goal.completed ? "line-through" : "none",
-              opacity: goal.completed ? 0.6 : 1,
+              textDecorationLine: goal.isCompleted ? "line-through" : "none",
+              opacity: goal.isCompleted ? 0.6 : 1,
             },
           ]}
         >
@@ -54,13 +54,14 @@ const GoalItem = ({
           Created: {new Date(goal.createdAt).toLocaleString()}
         </Text>
       </TouchableOpacity>
-      <TouchableOpacity
-        onPress={() => setEditOpen(true)}
-        style={styles.editBtn}
-      >
-        <Ionicons name="pencil" size={18} color={theme.primary} />
-      </TouchableOpacity>
-
+      {!goal.isCompleted && (
+        <TouchableOpacity
+          onPress={() => setEditOpen(true)}
+          style={styles.editBtn}
+        >
+          <Ionicons name="pencil" size={18} color={theme.primary} />
+        </TouchableOpacity>
+      )}
       <GoalModal
         visible={editOpen}
         onClose={() => setEditOpen(false)}
@@ -73,7 +74,7 @@ const GoalItem = ({
           dueDate: (goal as any).dueDate,
         }}
         onSubmit={async (values) => {
-          onEdit(goal.id, { ...goal, ...values }); // your existing updater
+          onEdit(goal.id, { ...goal, ...values });
           setEditOpen(false);
         }}
       />

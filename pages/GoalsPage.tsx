@@ -31,7 +31,7 @@ const GoalsPage = () => {
   }, [refresh]);
 
   const handleAddGoal = async (
-    goalData: Omit<Goal, "id" | "createdAt" | "completed">
+    goalData: Omit<Goal, "id" | "createdAt" | "isCompleted">
   ) => {
     const newGoal: Goal = {
       id: Math.random(),
@@ -39,7 +39,7 @@ const GoalsPage = () => {
       description: goalData.description,
       category: goalData.category,
       dueDate: goalData.dueDate,
-      completed: false,
+      isCompleted: false,
       createdAt: new Date().toISOString(),
     };
 
@@ -51,7 +51,7 @@ const GoalsPage = () => {
   const toggleGoal = async (id: number) => {
     await GoalService.toggleGoal(id);
     setRefresh((pre) => pre + 1);
-    console.log("toggle");
+    console.log("toggle ");
   };
 
   const deleteGoal = (id: number) => {
@@ -85,8 +85,8 @@ const GoalsPage = () => {
   );
 
   const sortedGoals = [
-    ...goals.filter((g) => !g.completed),
-    ...goals.filter((g) => g.completed),
+    ...goals.filter((g) => !g.isCompleted),
+    ...goals.filter((g) => g.isCompleted),
   ];
 
   return (

@@ -28,7 +28,7 @@ class GoalService {
       });
 
       const response = await promise.json();
-      console.log(response);
+      console.log(response.content);
 
       return response.content;
     } catch (error) {
