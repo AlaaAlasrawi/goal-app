@@ -15,6 +15,13 @@ export type Goal = {
   createdAt: string;
 };
 
+export type GoalFormValues = {
+  title: string;
+  description?: string;
+  category?: string;
+  dueDate?: string;
+};
+
 export type AppUser = {
   username: string;
   fullName: string;

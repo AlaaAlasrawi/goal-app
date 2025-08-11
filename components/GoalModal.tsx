@@ -1,26 +1,43 @@
-import React, { useState } from "react";
+// GoalModal.tsx  (only logic changes; your styles stay as-is)
+import React, { useEffect, useState } from "react";
 import { Modal, View, Text, TouchableOpacity, StyleSheet } from "react-native";
 import DateTimePicker from "@react-native-community/datetimepicker";
 import { TextInput, Button } from "react-native-paper";
+import { Goal, GoalFormValues } from "../hooks/types";
 
 type Props = {
   visible: boolean;
   onClose: () => void;
-  onSubmit: (goal: {
-    title: string;
-    description?: string;
-    category?: string;
-    dueDate?: string;
-  }) => void;
+  onSubmit: (goal: GoalFormValues) => void;
   theme: any;
+  mode?: "create" | "edit"; // NEW
+  initialValues?: GoalFormValues;
 };
 
-const GoalModal = ({ visible, onClose, onSubmit, theme }: Props) => {
+const GoalModal = ({
+  visible,
+  onClose,
+  onSubmit,
+  theme,
+  mode = "create",
+  initialValues,
+}: Props) => {
   const [title, setTitle] = useState("");
   const [description, setDescription] = useState("");
   const [category, setCategory] = useState("");
   const [dueDate, setDueDate] = useState<Date | undefined>(undefined);
   const [showPicker, setShowPicker] = useState(false);
+
+  // NEW: hydrate when opening
+  useEffect(() => {
+    if (!visible) return;
+    setTitle(initialValues?.title ?? "");
+    setDescription(initialValues?.description ?? "");
+    setCategory(initialValues?.category ?? "");
+    setDueDate(
+      initialValues?.dueDate ? new Date(initialValues.dueDate) : undefined
+    );
+  }, [visible, initialValues]);
 
   const handleDateChange = (_event: any, selectedDate?: Date) => {
     setShowPicker(false);
@@ -29,27 +46,30 @@ const GoalModal = ({ visible, onClose, onSubmit, theme }: Props) => {
 
   const handleSave = () => {
     if (!title.trim()) return;
-
     onSubmit({
       title: title.trim(),
       description: description || undefined,
       category: category || undefined,
       dueDate: dueDate?.toISOString(),
     });
-
-    setTitle("");
-    setDescription("");
-    setCategory("");
-    setDueDate(undefined);
+    // keep your original clear-on-create behavior
+    if (mode === "create") {
+      setTitle("");
+      setDescription("");
+      setCategory("");
+      setDueDate(undefined);
+    }
   };
 
-  const styles = createStyles(theme);
+  const styles = createStyles(theme); // stays EXACTLY as you wrote it
 
   return (
     <Modal visible={visible} animationType="slide" transparent>
       <View style={styles.modalBackground}>
         <View style={styles.modalContainer}>
-          <Text style={styles.title}>Add New Goal</Text>
+          <Text style={styles.title}>
+            {mode === "edit" ? "Edit Goal" : "Add New Goal"}
+          </Text>
 
           <TextInput
             label="Title"
@@ -59,10 +79,7 @@ const GoalModal = ({ visible, onClose, onSubmit, theme }: Props) => {
             style={styles.input}
             textColor={theme.text}
             theme={{
-              colors: {
-                onSurfaceVariant: theme.label,
-                primary: theme.primary,
-              },
+              colors: { onSurfaceVariant: theme.label, primary: theme.primary },
             }}
           />
 
@@ -75,10 +92,7 @@ const GoalModal = ({ visible, onClose, onSubmit, theme }: Props) => {
             textColor={theme.text}
             multiline
             theme={{
-              colors: {
-                onSurfaceVariant: theme.label,
-                primary: theme.primary,
-              },
+              colors: { onSurfaceVariant: theme.label, primary: theme.primary },
             }}
           />
 
@@ -90,10 +104,7 @@ const GoalModal = ({ visible, onClose, onSubmit, theme }: Props) => {
             style={styles.input}
             textColor={theme.text}
             theme={{
-              colors: {
-                onSurfaceVariant: theme.label,
-                primary: theme.primary,
-              },
+              colors: { onSurfaceVariant: theme.label, primary: theme.primary },
             }}
           />
 
@@ -125,7 +136,6 @@ const GoalModal = ({ visible, onClose, onSubmit, theme }: Props) => {
             >
               Cancel
             </Button>
-
             <Button
               mode="contained"
               onPress={handleSave}
@@ -134,7 +144,7 @@ const GoalModal = ({ visible, onClose, onSubmit, theme }: Props) => {
               textColor={theme.onPrimary}
               contentStyle={styles.contentStyle}
             >
-              Save
+              {mode === "edit" ? "Save" : "Create"}
             </Button>
           </View>
         </View>
@@ -143,6 +153,7 @@ const GoalModal = ({ visible, onClose, onSubmit, theme }: Props) => {
   );
 };
 
+// ⬇️ your original styles — unchanged ⬇️
 const createStyles = (theme: any) =>
   StyleSheet.create({
     modalBackground: {

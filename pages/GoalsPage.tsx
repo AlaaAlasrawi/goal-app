@@ -68,12 +68,19 @@ const GoalsPage = () => {
     ]);
   };
 
+  const updateGoal = async (id: number, updateGoal: Goal) => {
+    await GoalService.updateGoal(id, updateGoal);
+    setRefresh((pre) => pre + 1);
+    console.log("update goal !!");
+  };
+
   const renderGoal = ({ item }: { item: Goal }) => (
     <GoalItem
       goal={item}
       theme={theme}
       onToggle={toggleGoal}
       onDelete={deleteGoal}
+      onEdit={updateGoal}
     />
   );
 

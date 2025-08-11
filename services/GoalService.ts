@@ -69,14 +69,16 @@ class GoalService {
   }
 
   public async updateGoal(id: number, updatedGoal: Goal): Promise<void> {
-    const goals: Goal[] = JSON.parse(
-      (await AsyncStorage.getItem("goals")) ?? "[]"
-    );
-    const goalIndex = goals.findIndex((goal) => goal.id === id);
-
-    if (goalIndex !== -1) {
-      goals[goalIndex] = updatedGoal;
-      await AsyncStorage.setItem("goals", JSON.stringify(goals));
+    try {
+      const promise = await fetch(`${URL}/${id}`, {
+        method: "PUT",
+        headers: {
+          "Content-Type": "application/json",
+        },
+        body: JSON.stringify(updatedGoal),
+      });
+    } catch (error) {
+      console.log(error);
     }
   }
 }

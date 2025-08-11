@@ -1,16 +1,25 @@
-import React from "react";
+import React, { useState } from "react";
 import { View, Text, TouchableOpacity, StyleSheet } from "react-native";
 import { Ionicons } from "@expo/vector-icons";
-import { Goal } from "../hooks/types";
+import { Goal, GoalFormValues } from "../hooks/types";
+import GoalModal from "./GoalModal";
 
 interface GoalItemProps {
   goal: Goal;
   theme: any;
   onToggle: (id: number) => void;
   onDelete: (id: number) => void;
+  onEdit: (id: number, goal: Goal) => void;
 }
 
-const GoalItem = ({ goal, theme, onToggle, onDelete }: GoalItemProps) => {
+const GoalItem = ({
+  goal,
+  theme,
+  onToggle,
+  onDelete,
+  onEdit,
+}: GoalItemProps) => {
+  const [editOpen, setEditOpen] = useState(false);
   const styles = createStyles(theme);
 
   return (
@@ -45,6 +54,29 @@ const GoalItem = ({ goal, theme, onToggle, onDelete }: GoalItemProps) => {
           Created: {new Date(goal.createdAt).toLocaleString()}
         </Text>
       </TouchableOpacity>
+      <TouchableOpacity
+        onPress={() => setEditOpen(true)}
+        style={styles.editBtn}
+      >
+        <Ionicons name="pencil" size={18} color={theme.primary} />
+      </TouchableOpacity>
+
+      <GoalModal
+        visible={editOpen}
+        onClose={() => setEditOpen(false)}
+        theme={theme}
+        mode="edit"
+        initialValues={{
+          title: goal.title,
+          description: (goal as any).description,
+          category: (goal as any).category,
+          dueDate: (goal as any).dueDate,
+        }}
+        onSubmit={async (values) => {
+          onEdit(goal.id, { ...goal, ...values }); // your existing updater
+          setEditOpen(false);
+        }}
+      />
     </View>
   );
 };
@@ -64,18 +96,10 @@ const createStyles = (theme: any) =>
       shadowOpacity: 0.1,
       shadowRadius: 2,
     },
-    goalText: {
-      fontSize: 16,
-      fontWeight: "600",
-    },
-    createdText: {
-      fontSize: 11,
-      marginTop: 4,
-    },
-    checkboxIcon: {
-      marginRight: 10,
-      marginTop: 2,
-    },
+    goalText: { fontSize: 16, fontWeight: "600" },
+    createdText: { fontSize: 11, marginTop: 4 },
+    checkboxIcon: { marginRight: 10, marginTop: 2 },
+    editBtn: { padding: 6, marginLeft: 8 },
   });
 
 export default GoalItem;
