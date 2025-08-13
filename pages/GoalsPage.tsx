@@ -33,6 +33,12 @@ const GoalsPage = () => {
   const handleAddGoal = async (
     goalData: Omit<Goal, "id" | "createdAt" | "isCompleted">
   ) => {
+    const error = validateGoalInput(goalData);
+    if (error) {
+      Alert.alert("Invalid input", error);
+      return;
+    }
+
     const newGoal: Goal = {
       id: Math.random(),
       title: goalData.title,
@@ -73,6 +79,28 @@ const GoalsPage = () => {
     setRefresh((pre) => pre + 1);
     console.log("update goal !!");
   };
+
+  function validateGoalInput(
+    goalData: Omit<Goal, "id" | "createdAt" | "isCompleted">
+  ): string | undefined {
+    const { title, category, dueDate, description } = goalData;
+
+    if (!title || title.trim().length === 0) return "Title is required.";
+    if (title.trim().length < 1) return "Title must be at least 2 characters.";
+
+    if (description && description.length > 500)
+      return "Description must be ≤ 500 characters.";
+
+    if (dueDate) {
+      const today = new Date();
+      today.setHours(0, 0, 0, 0);
+      const dd = new Date(dueDate);
+      dd.setHours(0, 0, 0, 0);
+      if (dd < today) return "Due date cannot be in the past.";
+    }
+
+    return undefined;
+  }
 
   const renderGoal = ({ item }: { item: Goal }) => (
     <GoalItem
