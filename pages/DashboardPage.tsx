@@ -4,7 +4,6 @@ import { useTheme } from "../hooks/ThemeContext";
 import { Goal } from "../hooks/types";
 import UserInfoCard from "../components/dashboard/UserInfoCard";
 import RecentlyCreatedGoals from "../components/dashboard/RecentlyCreatedGoals";
-import GoalsBarChart from "../components/dashboard/GoalsBarChart";
 import GoalService from "../services/GoalService";
 import UserService from "../services/UserService";
 import GoalsPieChart from "../components/dashboard/GoalsPieChart";

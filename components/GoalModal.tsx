@@ -1,30 +1,18 @@
-import React, { useEffect, useMemo, useState } from "react";
+// GoalModal.tsx
+import React from "react";
 import { Modal, View, Text, TouchableOpacity, StyleSheet } from "react-native";
 import DateTimePicker from "@react-native-community/datetimepicker";
 import { TextInput, Button } from "react-native-paper";
+import type { FormikProps } from "formik";
 import { GoalFormValues } from "../hooks/types";
 
 type Props = {
   visible: boolean;
   onClose: () => void;
-  onSubmit: (goal: GoalFormValues) => void;
+  onSubmit: () => void; // will call formik.handleSubmit from parent
   theme: any;
   mode?: "create" | "edit";
-  initialValues?: GoalFormValues;
-};
-
-type FieldErrors = {
-  title?: string;
-  description?: string;
-  category?: string;
-  dueDate?: string;
-};
-
-type Touched = {
-  title?: boolean;
-  description?: boolean;
-  category?: boolean;
-  dueDate?: boolean;
+  formik: FormikProps<GoalFormValues>; // <-- IMPORTANT: expect full Formik object
 };
 
 const GoalModal = ({
@@ -33,114 +21,28 @@ const GoalModal = ({
   onSubmit,
   theme,
   mode = "create",
-  initialValues,
+  formik,
 }: Props) => {
-  const [title, setTitle] = useState("");
-  const [description, setDescription] = useState("");
-  const [category, setCategory] = useState("");
-  const [dueDate, setDueDate] = useState<Date | undefined>(undefined);
-  const [showPicker, setShowPicker] = useState(false);
+  const [showPicker, setShowPicker] = React.useState(false);
 
-  const [errors, setErrors] = useState<FieldErrors>({});
-  const [touched, setTouched] = useState<Touched>({});
+  // Optional guard (helps during refactors)
+  if (!formik) {
+    // Render nothing or a fallback instead of crashing
+    return null;
+  }
 
-  useEffect(() => {
-    if (!visible) return;
-    setTitle(initialValues?.title ?? "");
-    setDescription(initialValues?.description ?? "");
-    setCategory(initialValues?.category ?? "");
-    setDueDate(
-      initialValues?.dueDate ? new Date(initialValues.dueDate) : undefined
-    );
-    setErrors({});
-    setTouched({});
-  }, [visible, initialValues]);
-
-  const validateAll = (state?: {
-    title: string;
-    description: string;
-    category: string;
-    dueDate?: Date;
-  }): FieldErrors => {
-    const v = state ?? { title, description, category, dueDate };
-    const next: FieldErrors = {};
-
-    // title
-    const t = v.title?.trim() ?? "";
-    if (!t) next.title = "Title is required.";
-    else if (t.length < 2) next.title = "Title must be at least 2 characters.";
-
-    // description
-    if (v.description && v.description.length > 500) {
-      next.description = "Description must be ≤ 500 characters.";
-    }
-
-    // due date
-    if (v.dueDate) {
-      const today = new Date();
-      today.setHours(0, 0, 0, 0);
-      const dd = new Date(v.dueDate);
-      dd.setHours(0, 0, 0, 0);
-      if (dd < today) next.dueDate = "Due date cannot be in the past.";
-    }
-
-    return next;
-  };
-
-  // live validation when any field changes (soft)
-  useEffect(() => {
-    const next = validateAll();
-    setErrors((prev) => ({ ...prev, ...next }));
-  }, [title, description, category, dueDate]);
-
-  const markTouched = (key: keyof Touched) =>
-    setTouched((t) => ({ ...t, [key]: true }));
+  const parsedDate = formik.values.dueDate
+    ? new Date(formik.values.dueDate)
+    : undefined;
 
   const handleDateChange = (_event: any, selectedDate?: Date) => {
     setShowPicker(false);
     if (selectedDate) {
-      setDueDate(selectedDate);
-      markTouched("dueDate");
-    }
-  };
-
-  const handleSave = () => {
-    const nextErrors = validateAll();
-    setErrors(nextErrors);
-    setTouched({
-      title: true,
-      description: true,
-      category: true,
-      dueDate: true,
-    });
-
-    const hasErrors = Object.values(nextErrors).some(Boolean);
-    if (hasErrors) return;
-
-    onSubmit({
-      title: title.trim(),
-      description: description ? description.trim() : undefined,
-      category: category.trim(),
-      dueDate: dueDate?.toISOString(), // keep ISO for storage
-    });
-
-    if (mode === "create") {
-      setTitle("");
-      setDescription("");
-      setCategory("");
-      setDueDate(undefined);
-      setErrors({});
-      setTouched({});
+      formik.setFieldValue("dueDate", selectedDate.toISOString(), true);
     }
   };
 
   const styles = createStyles(theme);
-
-  // Disable Save when obviously invalid (no title/category)
-  const isSaveDisabled = useMemo(() => {
-    const e = validateAll();
-    return !!(e.title || e.category);
-  }, [title, category, description, dueDate]);
 
   return (
     <Modal visible={visible} animationType="slide" transparent>
@@ -152,59 +54,58 @@ const GoalModal = ({
 
           <TextInput
             label="Title"
-            mode="flat"
-            value={title}
-            onChangeText={(v) => setTitle(v)}
-            onBlur={() => markTouched("title")}
+            value={formik.values.title}
+            onChangeText={formik.handleChange("title")}
+            onBlur={formik.handleBlur("title")}
             style={styles.input}
+            error={Boolean(formik.touched.title && formik.errors.title)}
             textColor={theme.text}
-            error={touched.title && !!errors.title}
             theme={{
               colors: { onSurfaceVariant: theme.label, primary: theme.primary },
             }}
           />
-          {touched.title && errors.title ? (
+          {formik.touched.title && formik.errors.title ? (
             <Text style={{ color: "red", marginBottom: 8 }}>
-              {errors.title}
+              {formik.errors.title as string}
             </Text>
           ) : null}
 
           <TextInput
             label="Description"
-            mode="flat"
-            value={description}
-            onChangeText={(v) => setDescription(v)}
-            onBlur={() => markTouched("description")}
+            value={formik.values.description ?? ""}
+            onChangeText={formik.handleChange("description")}
+            onBlur={formik.handleBlur("description")}
             style={styles.input}
-            textColor={theme.text}
             multiline
-            error={touched.description && !!errors.description}
+            error={Boolean(
+              formik.touched.description && formik.errors.description
+            )}
+            textColor={theme.text}
             theme={{
               colors: { onSurfaceVariant: theme.label, primary: theme.primary },
             }}
           />
-          {touched.description && errors.description ? (
+          {formik.touched.description && formik.errors.description ? (
             <Text style={{ color: "red", marginBottom: 8 }}>
-              {errors.description}
+              {formik.errors.description as string}
             </Text>
           ) : null}
 
           <TextInput
             label="Category"
-            mode="flat"
-            value={category}
-            onChangeText={(v) => setCategory(v)}
-            onBlur={() => markTouched("category")}
+            value={formik.values.category ?? ""}
+            onChangeText={formik.handleChange("category")}
+            onBlur={formik.handleBlur("category")}
             style={styles.input}
+            error={Boolean(formik.touched.category && formik.errors.category)}
             textColor={theme.text}
-            error={touched.category && !!errors.category}
             theme={{
               colors: { onSurfaceVariant: theme.label, primary: theme.primary },
             }}
           />
-          {touched.category && errors.category ? (
+          {formik.touched.category && formik.errors.category ? (
             <Text style={{ color: "red", marginBottom: 8 }}>
-              {errors.category}
+              {formik.errors.category as string}
             </Text>
           ) : null}
 
@@ -213,18 +114,20 @@ const GoalModal = ({
             style={styles.dateButton}
           >
             <Text style={styles.dateText}>
-              {dueDate ? `Due: ${dueDate.toLocaleString()}` : "Pick Due Date"}
+              {parsedDate
+                ? `Due: ${parsedDate.toLocaleString()}`
+                : "Pick Due Date (optional)"}
             </Text>
           </TouchableOpacity>
-          {touched.dueDate && errors.dueDate ? (
+          {formik.touched.dueDate && formik.errors.dueDate ? (
             <Text style={{ color: "red", marginBottom: 8 }}>
-              {errors.dueDate}
+              {formik.errors.dueDate as string}
             </Text>
           ) : null}
 
           {showPicker && (
             <DateTimePicker
-              value={dueDate || new Date()}
+              value={parsedDate || new Date()}
               mode="datetime"
               display="default"
               onChange={handleDateChange}
@@ -243,12 +146,12 @@ const GoalModal = ({
             </Button>
             <Button
               mode="contained"
-              onPress={handleSave}
+              onPress={onSubmit}
               style={styles.button}
               buttonColor={theme.primary}
               textColor={theme.onPrimary}
               contentStyle={styles.contentStyle}
-              disabled={isSaveDisabled}
+              disabled={formik.isSubmitting}
             >
               {mode === "edit" ? "Save" : "Create"}
             </Button>
@@ -259,7 +162,6 @@ const GoalModal = ({
   );
 };
 
-// ⬇️ styles unchanged
 const createStyles = (theme: any) =>
   StyleSheet.create({
     modalBackground: {

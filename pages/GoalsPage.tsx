@@ -1,66 +1,90 @@
-import React, { useState, useEffect } from "react";
+import React, { JSX, useEffect, useMemo, useState } from "react";
 import {
   View,
   Text,
   FlatList,
   Alert,
   StyleSheet,
-  Modal,
   TouchableOpacity,
 } from "react-native";
+import { Ionicons } from "@expo/vector-icons";
+import { useFormik } from "formik";
 import { useTheme } from "../hooks/ThemeContext";
 import GoalItem from "../components/GoalItem";
-import { Goal } from "../hooks/types";
-import { Ionicons } from "@expo/vector-icons";
 import GoalModal from "../components/GoalModal";
 import GoalService from "../services/GoalService";
+import { Goal, GoalFormValues } from "../hooks/types";
+import { GoalValidation } from "../validations/GoalValidation";
 
-const GoalsPage = () => {
+type Theme = {
+  background: string;
+  text: string;
+  primary: string;
+  placeholder: string;
+  onPrimary?: string;
+};
+
+function GoalsPage(): JSX.Element {
   const [goals, setGoals] = useState<Goal[]>([]);
   const [modalVisible, setModalVisible] = useState(false);
   const [refresh, setRefresh] = useState(0);
-
-  const { theme } = useTheme();
-  const styles = createStyles(theme);
+  const { theme } = useTheme() as { theme: Theme };
+  const styles = useMemo(() => createStyles(theme), [theme]);
 
   useEffect(() => {
-    const loadGoals = async () => {
-      setGoals(await GoalService.getAllGoals());
-    };
+    async function loadGoals() {
+      const list = await GoalService.getAllGoals();
+      setGoals(list ?? []);
+    }
     loadGoals();
   }, [refresh]);
 
-  const handleAddGoal = async (
-    goalData: Omit<Goal, "id" | "createdAt" | "isCompleted">
-  ) => {
-    const error = validateGoalInput(goalData);
-    if (error) {
-      Alert.alert("Invalid input", error);
-      return;
-    }
+  const formik = useFormik<GoalFormValues>({
+    initialValues: { title: "", description: "", category: "", dueDate: "" },
+    validationSchema: GoalValidation,
+    onSubmit: async (values, { resetForm }) => {
+      await handleAddGoal(values);
+      resetForm();
+      setModalVisible(false);
+    },
+  });
 
+  useEffect(() => {
+    console.log("Formik values:", formik.values);
+    console.log("Formik errors:", formik.errors);
+    console.log("Formik touched:", formik.touched);
+    console.log("isSubmitting:", formik.isSubmitting);
+    console.log("isValid:", formik.isValid);
+    console.log("submitCount:", formik.submitCount);
+  }, [
+    formik.values,
+    formik.errors,
+    formik.touched,
+    formik.isSubmitting,
+    formik.isValid,
+    formik.submitCount,
+  ]);
+
+  async function handleAddGoal(goalData: GoalFormValues): Promise<void> {
     const newGoal: Goal = {
-      id: Math.random(),
-      title: goalData.title,
-      description: goalData.description,
-      category: goalData.category,
-      dueDate: goalData.dueDate,
+      id: Math.floor(Math.random() * 1_000_000_000),
+      title: goalData.title.trim(),
+      description: goalData.description?.trim(),
+      category: goalData.category?.trim(),
+      dueDate: goalData.dueDate || undefined,
       isCompleted: false,
       createdAt: new Date().toISOString(),
     };
-
     await GoalService.addGoal(newGoal);
-    setRefresh((pre) => pre + 1);
-    setModalVisible(false);
-  };
+    setRefresh((p) => p + 1);
+  }
 
-  const toggleGoal = async (id: number) => {
+  async function toggleGoal(id: number): Promise<void> {
     await GoalService.toggleGoal(id);
-    setRefresh((pre) => pre + 1);
-    console.log("toggle ");
-  };
+    setRefresh((p) => p + 1);
+  }
 
-  const deleteGoal = (id: number) => {
+  function deleteGoal(id: number): void {
     Alert.alert("Delete Goal", "Are you sure you want to delete this goal?", [
       { text: "Cancel", style: "cancel" },
       {
@@ -68,54 +92,36 @@ const GoalsPage = () => {
         style: "destructive",
         onPress: async () => {
           await GoalService.deleteGoal(id);
-          setRefresh((pre) => pre + 1);
+          setRefresh((p) => p + 1);
         },
       },
     ]);
-  };
-
-  const updateGoal = async (id: number, updateGoal: Goal) => {
-    await GoalService.updateGoal(id, updateGoal);
-    setRefresh((pre) => pre + 1);
-    console.log("update goal !!");
-  };
-
-  function validateGoalInput(
-    goalData: Omit<Goal, "id" | "createdAt" | "isCompleted">
-  ): string | undefined {
-    const { title, category, dueDate, description } = goalData;
-
-    if (!title || title.trim().length === 0) return "Title is required.";
-    if (title.trim().length < 1) return "Title must be at least 2 characters.";
-
-    if (description && description.length > 500)
-      return "Description must be ≤ 500 characters.";
-
-    if (dueDate) {
-      const today = new Date();
-      today.setHours(0, 0, 0, 0);
-      const dd = new Date(dueDate);
-      dd.setHours(0, 0, 0, 0);
-      if (dd < today) return "Due date cannot be in the past.";
-    }
-
-    return undefined;
   }
 
-  const renderGoal = ({ item }: { item: Goal }) => (
-    <GoalItem
-      goal={item}
-      theme={theme}
-      onToggle={toggleGoal}
-      onDelete={deleteGoal}
-      onEdit={updateGoal}
-    />
-  );
+  async function updateGoal(id: number, updated: Goal): Promise<void> {
+    await GoalService.updateGoal(id, updated);
+    setRefresh((p) => p + 1);
+  }
 
-  const sortedGoals = [
-    ...goals.filter((g) => !g.isCompleted),
-    ...goals.filter((g) => g.isCompleted),
-  ];
+  function renderGoal({ item }: { item: Goal }): JSX.Element {
+    return (
+      <GoalItem
+        goal={item}
+        theme={theme}
+        onToggle={toggleGoal}
+        onDelete={deleteGoal}
+        onEdit={updateGoal}
+      />
+    );
+  }
+
+  const sortedGoals = useMemo(
+    () => [
+      ...goals.filter((g) => !g.isCompleted),
+      ...goals.filter((g) => g.isCompleted),
+    ],
+    [goals]
+  );
 
   return (
     <View style={styles.container}>
@@ -136,7 +142,7 @@ const GoalsPage = () => {
       ) : (
         <FlatList
           data={sortedGoals}
-          keyExtractor={(item) => item.id.toString()}
+          keyExtractor={(item) => String(item.id)}
           renderItem={renderGoal}
           contentContainerStyle={{ paddingBottom: 40 }}
         />
@@ -145,20 +151,17 @@ const GoalsPage = () => {
       <GoalModal
         visible={modalVisible}
         onClose={() => setModalVisible(false)}
-        onSubmit={handleAddGoal}
+        onSubmit={() => formik.handleSubmit()}
         theme={theme}
+        formik={formik}
       />
     </View>
   );
-};
+}
 
-const createStyles = (theme: any) =>
-  StyleSheet.create({
-    container: {
-      flex: 1,
-      padding: 20,
-      backgroundColor: theme.background,
-    },
+function createStyles(theme: Theme) {
+  return StyleSheet.create({
+    container: { flex: 1, padding: 20, backgroundColor: theme.background },
     header: {
       fontSize: 26,
       fontWeight: "700",
@@ -171,11 +174,7 @@ const createStyles = (theme: any) =>
       fontSize: 16,
       textAlign: "center",
     },
-    addButton: {
-      flexDirection: "row",
-      alignItems: "center",
-      marginBottom: 20,
-    },
+    addButton: { flexDirection: "row", alignItems: "center", marginBottom: 20 },
     addText: {
       marginLeft: 10,
       fontSize: 18,
@@ -183,5 +182,6 @@ const createStyles = (theme: any) =>
       color: theme.primary,
     },
   });
+}
 
 export default GoalsPage;
