@@ -24,7 +24,12 @@ const GoalItem = ({
 
   return (
     <View style={[styles.wrapper, { backgroundColor: theme.surface }]}>
-      <TouchableOpacity onPress={() => onToggle(goal.id)}>
+      <TouchableOpacity
+        onPress={() => {
+          console.log(goal.id);
+          onToggle(goal.id);
+        }}
+      >
         <Ionicons
           name={goal.isCompleted ? "checkbox-outline" : "square-outline"}
           size={22}
@@ -69,12 +74,12 @@ const GoalItem = ({
         mode="edit"
         initialValues={{
           title: goal.title,
-          description: (goal as any).description,
-          category: (goal as any).category,
-          dueDate: (goal as any).dueDate,
+          description: goal.description,
+          category: goal.category,
+          dueDate: goal.dueDate,
         }}
         onSubmit={async (values) => {
-          onEdit(goal.id, { ...goal, ...values });
+          await onEdit(goal.id, { ...goal, ...values });
           setEditOpen(false);
         }}
       />

@@ -3,16 +3,24 @@ import React from "react";
 import { Modal, View, Text, TouchableOpacity, StyleSheet } from "react-native";
 import DateTimePicker from "@react-native-community/datetimepicker";
 import { TextInput, Button } from "react-native-paper";
-import type { FormikProps } from "formik";
+import { useFormik } from "formik";
 import { GoalFormValues } from "../hooks/types";
+import { GoalValidation } from "../validations/GoalValidation";
 
 type Props = {
   visible: boolean;
   onClose: () => void;
-  onSubmit: () => void; // will call formik.handleSubmit from parent
+  onSubmit: (values: GoalFormValues) => void | Promise<void>;
   theme: any;
   mode?: "create" | "edit";
-  formik: FormikProps<GoalFormValues>; // <-- IMPORTANT: expect full Formik object
+  initialValues?: GoalFormValues; // used for edit
+};
+
+const DEFAULT_VALUES: GoalFormValues = {
+  title: "",
+  description: "",
+  category: "",
+  dueDate: "",
 };
 
 const GoalModal = ({
@@ -21,15 +29,19 @@ const GoalModal = ({
   onSubmit,
   theme,
   mode = "create",
-  formik,
+  initialValues,
 }: Props) => {
   const [showPicker, setShowPicker] = React.useState(false);
 
-  // Optional guard (helps during refactors)
-  if (!formik) {
-    // Render nothing or a fallback instead of crashing
-    return null;
-  }
+  const formik = useFormik<GoalFormValues>({
+    initialValues: initialValues ?? DEFAULT_VALUES,
+    enableReinitialize: true, // re-fill when initialValues change (edit)
+    validationSchema: GoalValidation,
+    onSubmit: async (values, helpers) => {
+      await onSubmit(values);
+      helpers.setSubmitting(false);
+    },
+  });
 
   const parsedDate = formik.values.dueDate
     ? new Date(formik.values.dueDate)
@@ -146,7 +158,7 @@ const GoalModal = ({
             </Button>
             <Button
               mode="contained"
-              onPress={onSubmit}
+              onPress={formik.handleSubmit as () => void} // ✅ matches onPress type
               style={styles.button}
               buttonColor={theme.primary}
               textColor={theme.onPrimary}
@@ -182,33 +194,17 @@ const createStyles = (theme: any) =>
       marginBottom: 20,
       textAlign: "center",
     },
-    input: {
-      marginBottom: 16,
-      backgroundColor: theme.background,
-    },
-    dateButton: {
-      marginBottom: 20,
-      alignItems: "flex-start",
-    },
-    dateText: {
-      color: theme.primary,
-      fontSize: 16,
-      fontWeight: "500",
-    },
+    input: { marginBottom: 16, backgroundColor: theme.background },
+    dateButton: { marginBottom: 20, alignItems: "flex-start" },
+    dateText: { color: theme.primary, fontSize: 16, fontWeight: "500" },
     btnContainer: {
       flexDirection: "row",
       justifyContent: "flex-end",
       gap: 10,
       marginTop: 40,
     },
-    button: {
-      borderRadius: 8,
-      marginLeft: 10,
-    },
-    contentStyle: {
-      paddingVertical: 6,
-      paddingHorizontal: 20,
-    },
+    button: { borderRadius: 8, marginLeft: 10 },
+    contentStyle: { paddingVertical: 6, paddingHorizontal: 20 },
   });
 
 export default GoalModal;

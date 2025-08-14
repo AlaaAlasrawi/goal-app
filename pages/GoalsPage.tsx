@@ -151,9 +151,12 @@ function GoalsPage(): JSX.Element {
       <GoalModal
         visible={modalVisible}
         onClose={() => setModalVisible(false)}
-        onSubmit={() => formik.handleSubmit()}
         theme={theme}
-        formik={formik}
+        mode="create"
+        onSubmit={async (values) => {
+          await handleAddGoal(values);
+          setModalVisible(false);
+        }}
       />
     </View>
   );

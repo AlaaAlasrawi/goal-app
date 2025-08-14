@@ -81,6 +81,17 @@ class GoalService {
       console.log(error);
     }
   }
+
+  public async getCompletedGoalsCount(): Promise<number> {
+    try {
+      const promise = await fetch(`${URL}/completed-goals-count`);
+      const response = promise.json();
+      return response;
+    } catch (error) {
+      console.log(error);
+      return 0;
+    }
+  }
 }
 
 export default new GoalService();

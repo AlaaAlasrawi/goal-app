@@ -15,12 +15,12 @@ const DashboardPage = () => {
 
   useEffect(() => {
     (async () => {
-      const [goalsData, user] = await Promise.all([
+      const [goalsData, completedGoalsCount] = await Promise.all([
         GoalService.getAllGoals(),
-        UserService.getUserProfile(),
+        GoalService.getCompletedGoalsCount(),
       ]);
       setGoals(goalsData);
-      setCompletedGoals(user.noCompletedGoals ?? 0);
+      setCompletedGoals(completedGoalsCount ?? 0);
     })();
   }, []);
 
