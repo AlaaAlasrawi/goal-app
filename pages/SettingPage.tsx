@@ -18,12 +18,15 @@ import { TabRoutes } from "../hooks/types";
 import SettingItem from "../components/SettingItem";
 import AppToggleButton from "../components/AppToggleButton";
 import UserService from "../services/UserService";
+import AuthenticationService from "../services/AuthenticationService";
+import { useAuth } from "../hooks/AuthProvider";
 
 const SettingPage = () => {
   const [username, setUsername] = useState<string | undefined>();
   const [name, setName] = useState<string | undefined>();
 
   const { theme } = useTheme();
+  const { signOut } = useAuth();
 
   const navigation = useNavigation<NavigationProp<TabRoutes>>();
 
@@ -49,13 +52,8 @@ const SettingPage = () => {
   };
 
   const logout = () => {
-    console.log("logout");
-    navigation.dispatch(
-      CommonActions.reset({
-        index: 0,
-        routes: [{ name: "Login" }],
-      })
-    );
+    AuthenticationService.logout();
+    signOut();
   };
 
   const styles = createStyles(theme);
@@ -93,22 +91,19 @@ const createStyles = (theme: any) =>
     },
     logoutButton: {
       backgroundColor: theme.primary,
-      padding: 3.5,
-      borderRadius: 8,
-      alignItems: "center",
-      justifyContent: "center",
-      marginTop: 16,
       alignSelf: "stretch",
-      overflow: "hidden",
+      width: "100%",
+      borderRadius: 8,
+      marginTop: 16,
     },
     logoutContent: {
-      height: 45, // comfortable touch height
-      justifyContent: "center",
+      minHeight: 48,
+      paddingVertical: 6,
     },
     logoutText: {
-      color: "white",
       fontSize: 16,
       fontWeight: "bold",
+      color: "white",
     },
   });
 

@@ -1,17 +1,19 @@
 import React from "react";
-import { Provider } from "react-redux";
 import { PaperProvider } from "react-native-paper";
 
 import { ThemeProvider } from "../../hooks/ThemeContext";
 import NavigationWrapper from "./NavigationWrapper";
+import { AuthProvider } from "../../hooks/AuthProvider";
 
 const InnerWrapper = () => {
   return (
-    <ThemeProvider>
-      <PaperProvider>
-        <NavigationWrapper />
-      </PaperProvider>
-    </ThemeProvider>
+    <AuthProvider>
+      <ThemeProvider>
+        <PaperProvider>
+          <NavigationWrapper />
+        </PaperProvider>
+      </ThemeProvider>
+    </AuthProvider>
   );
 };
 

@@ -33,8 +33,9 @@ export type RootStackParamList = {
   Auth: undefined;
 };
 
-// export type RootStackParamList = {
-//   Main: undefined;
-//   LoginPage: undefined;
-//   GoalsPage: { goal: string };
-// };
+export type AuthCtx = {
+  checked: boolean;
+  isAuthed: boolean;
+  signIn(): Promise<void>;
+  signOut(): Promise<void>;
+};

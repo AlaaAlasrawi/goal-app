@@ -8,6 +8,7 @@ import TabNavigation from "../navigations/TabNavigation";
 import LoginPage from "../../pages/LoginPage";
 import { RootStackParamList } from "../../hooks/types";
 import { TOKEN_KEY } from "../../api/env";
+import { useAuth } from "../../hooks/AuthProvider";
 
 const RootStack = createNativeStackNavigator<RootStackParamList>();
 const AuthStack = createNativeStackNavigator();
@@ -28,16 +29,7 @@ const AppNavigator = () => (
 
 export default function NavigationWrapper() {
   const { theme, colorTheme } = useTheme();
-  const [checked, setChecked] = useState(false);
-  const [isAuthed, setIsAuthed] = useState(false);
-
-  useEffect(() => {
-    (async () => {
-      const token = await AsyncStorage.getItem(TOKEN_KEY);
-      setIsAuthed(token ? true : false);
-      setChecked(true);
-    })();
-  }, []);
+  const { checked, isAuthed } = useAuth();
 
   if (!checked) return null;
 

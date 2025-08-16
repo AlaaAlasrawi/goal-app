@@ -16,5 +16,10 @@ class AuthenticationService {
       return "";
     }
   }
+
+  public async logout(): Promise<void> {
+    console.log("logout");
+    await AsyncStorage.removeItem(TOKEN_KEY);
+  }
 }
 export default new AuthenticationService();

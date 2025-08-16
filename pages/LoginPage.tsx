@@ -19,9 +19,11 @@ import {
   useNavigation,
 } from "@react-navigation/native";
 import { TabRoutes } from "../hooks/types";
+import { useAuth } from "../hooks/AuthProvider";
 
 const LoginPage = () => {
   const { theme } = useTheme();
+  const { signIn } = useAuth();
   const styles = createStyles(theme);
   const navigation = useNavigation<NavigationProp<TabRoutes>>();
 
@@ -41,14 +43,7 @@ const LoginPage = () => {
       values.password
     );
 
-    if (token) {
-      navigation.dispatch(
-        CommonActions.reset({
-          index: 0,
-          routes: [{ name: "App" }],
-        })
-      );
-    }
+    signIn();
   };
 
   return (
