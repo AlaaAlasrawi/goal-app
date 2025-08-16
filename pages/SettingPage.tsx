@@ -7,14 +7,14 @@ import {
   TouchableOpacity,
   Alert,
 } from "react-native";
-import { NavigationProp, useNavigation } from "@react-navigation/native";
-import AsyncStorage from "@react-native-async-storage/async-storage";
+import {
+  CommonActions,
+  NavigationProp,
+  useNavigation,
+} from "@react-navigation/native";
 import { useTheme } from "../hooks/ThemeContext";
-
 import { Button } from "react-native-paper";
-
 import { TabRoutes } from "../hooks/types";
-import LoginPage from "./LoginPage";
 import SettingItem from "../components/SettingItem";
 import AppToggleButton from "../components/AppToggleButton";
 import UserService from "../services/UserService";
@@ -37,10 +37,6 @@ const SettingPage = () => {
     loadUserInfo();
   }, []);
 
-  const logout = () => {
-    console.log("logout");
-  };
-
   const handleLogout = () => {
     Alert.alert("Logout", "Are you sure you want to log out?", [
       { text: "Cancel", style: "cancel" },
@@ -52,8 +48,14 @@ const SettingPage = () => {
     ]);
   };
 
-  const goLogin = () => {
-    navigation.navigate("LoginPage");
+  const logout = () => {
+    console.log("logout");
+    navigation.dispatch(
+      CommonActions.reset({
+        index: 0,
+        routes: [{ name: "Login" }],
+      })
+    );
   };
 
   const styles = createStyles(theme);
@@ -72,18 +74,10 @@ const SettingPage = () => {
         mode="contained"
         onPress={handleLogout}
         style={styles.logoutButton}
+        contentStyle={styles.logoutContent}
         labelStyle={styles.logoutText}
       >
         Logout
-      </Button>
-
-      <Button
-        mode="contained"
-        onPress={goLogin}
-        style={styles.logoutButton}
-        labelStyle={styles.logoutText}
-      >
-        Login page
       </Button>
     </View>
   );
@@ -104,6 +98,12 @@ const createStyles = (theme: any) =>
       alignItems: "center",
       justifyContent: "center",
       marginTop: 16,
+      alignSelf: "stretch",
+      overflow: "hidden",
+    },
+    logoutContent: {
+      height: 45, // comfortable touch height
+      justifyContent: "center",
     },
     logoutText: {
       color: "white",

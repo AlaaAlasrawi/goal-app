@@ -1,7 +1,7 @@
-import AsyncStorage from "@react-native-async-storage/async-storage";
+import { API_BASE } from "../api/env";
 import { Goal } from "../hooks/types";
 
-const URL = "http://192.168.1.165:8080/api/v1/goal";
+const URL = `${API_BASE}/goal`;
 
 class GoalService {
   public async addGoal(goal: Goal): Promise<void> {
@@ -28,8 +28,6 @@ class GoalService {
       });
 
       const response = await promise.json();
-      console.log(response.content);
-
       return response.content;
     } catch (error) {
       console.log(error);
@@ -42,9 +40,7 @@ class GoalService {
       const promise = await fetch(`${URL}/${goalId}`, {
         method: "DELETE",
       });
-      console.log("promise is = " + promise);
       const response = await promise.json();
-      console.log("response is = " + response);
       return response;
     } catch (error) {
       return false;

@@ -1,31 +1,61 @@
-import React from "react";
-import { NavigationContainer } from "@react-navigation/native";
-import { useTheme } from "../../hooks/ThemeContext";
+import React, { useEffect, useState } from "react";
+import { NavigationContainer, CommonActions } from "@react-navigation/native";
 import { createNativeStackNavigator } from "@react-navigation/native-stack";
+import AsyncStorage from "@react-native-async-storage/async-storage";
+import { StatusBar } from "expo-status-bar";
+import { useTheme } from "../../hooks/ThemeContext";
 import TabNavigation from "../navigations/TabNavigation";
 import LoginPage from "../../pages/LoginPage";
 import { RootStackParamList } from "../../hooks/types";
-import { StatusBar } from "expo-status-bar";
+import { TOKEN_KEY } from "../../api/env";
 
-const Stack = createNativeStackNavigator<RootStackParamList>();
+const RootStack = createNativeStackNavigator<RootStackParamList>();
+const AuthStack = createNativeStackNavigator();
+const AppStack = createNativeStackNavigator();
 
-const NavigationWrapper = () => {
+const AuthNavigator = () => (
+  <AuthStack.Navigator screenOptions={{ headerShown: false }}>
+    <AuthStack.Screen name="Login" component={LoginPage} />
+    {/* Signup, ForgotPassword, etc. */}
+  </AuthStack.Navigator>
+);
+
+const AppNavigator = () => (
+  <AppStack.Navigator screenOptions={{ headerShown: false }}>
+    <AppStack.Screen name="MainTabs" component={TabNavigation} />
+  </AppStack.Navigator>
+);
+
+export default function NavigationWrapper() {
   const { theme, colorTheme } = useTheme();
+  const [checked, setChecked] = useState(false);
+  const [isAuthed, setIsAuthed] = useState(false);
+
+  useEffect(() => {
+    (async () => {
+      const token = await AsyncStorage.getItem(TOKEN_KEY);
+      setIsAuthed(token ? true : false);
+      setChecked(true);
+    })();
+  }, []);
+
+  if (!checked) return null;
 
   return (
     <NavigationContainer>
       <StatusBar style={colorTheme ? "light" : "dark"} />
-      <Stack.Navigator
+      <RootStack.Navigator
         screenOptions={{
           headerShown: false,
           contentStyle: { backgroundColor: theme.background },
         }}
       >
-        <Stack.Screen name="Main" component={TabNavigation} />
-        <Stack.Screen name="LoginPage" component={LoginPage} />
-      </Stack.Navigator>
+        {isAuthed ? (
+          <RootStack.Screen name="App" component={AppNavigator} />
+        ) : (
+          <RootStack.Screen name="Auth" component={AuthNavigator} />
+        )}
+      </RootStack.Navigator>
     </NavigationContainer>
   );
-};
-
-export default NavigationWrapper;
+}

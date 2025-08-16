@@ -1,6 +1,7 @@
+import { API_BASE } from "../api/env";
 import { AppUser } from "../hooks/types";
 
-const URL = "http://192.168.1.165:8080/api/v1/user";
+const URL = `${API_BASE}/user`;
 
 class UserService {
   public async getUserProfile(): Promise<AppUser> {

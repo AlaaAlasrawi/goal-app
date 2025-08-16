@@ -1,11 +1,8 @@
-import { FormikErrors, FormikTouched } from "formik";
-
 export type TabRoutes = {
   Dashboard: undefined;
   Home: undefined;
   Goals: undefined;
   Setting: undefined;
-  LoginPage: undefined;
 };
 export type Goal = {
   id: number;
@@ -32,7 +29,12 @@ export type AppUser = {
 };
 
 export type RootStackParamList = {
-  Main: undefined;
-  LoginPage: undefined;
-  GoalsPage: { goal: string };
+  App: undefined;
+  Auth: undefined;
 };
+
+// export type RootStackParamList = {
+//   Main: undefined;
+//   LoginPage: undefined;
+//   GoalsPage: { goal: string };
+// };

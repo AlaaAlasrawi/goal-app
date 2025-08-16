@@ -12,19 +12,43 @@ import { Formik } from "formik";
 import * as Yup from "yup";
 import { useTheme } from "../hooks/ThemeContext";
 import { Ionicons } from "@expo/vector-icons";
+import AuthenticationService from "../services/AuthenticationService";
+import {
+  CommonActions,
+  NavigationProp,
+  useNavigation,
+} from "@react-navigation/native";
+import { TabRoutes } from "../hooks/types";
 
 const LoginPage = () => {
   const { theme } = useTheme();
   const styles = createStyles(theme);
+  const navigation = useNavigation<NavigationProp<TabRoutes>>();
 
   const loginSchema = Yup.object().shape({
-    email: Yup.string().email("Invalid email").required("Required"),
+    username: Yup.string().min(1, "min 1 chars").required("Required"),
     password: Yup.string().min(6, "Min 6 chars").required("Required"),
   });
 
-  const handleLogin = (values: { email: string; password: string }) => {
+  const handleLogin = async (values: {
+    username: string;
+    password: string;
+  }) => {
     console.log("Login with:", values);
-    // TODO: call auth service
+
+    const token = await AuthenticationService.login(
+      values.username,
+      values.password
+    );
+
+    if (token) {
+      navigation.dispatch(
+        CommonActions.reset({
+          index: 0,
+          routes: [{ name: "App" }],
+        })
+      );
+    }
   };
 
   return (
@@ -37,7 +61,7 @@ const LoginPage = () => {
         <Text style={styles.subtitle}>Login to your account</Text>
 
         <Formik
-          initialValues={{ email: "", password: "" }}
+          initialValues={{ username: "", password: "" }}
           validationSchema={loginSchema}
           onSubmit={handleLogin}
         >
@@ -51,17 +75,16 @@ const LoginPage = () => {
           }) => (
             <>
               <TextInput
-                placeholder="Email"
+                placeholder="username"
                 placeholderTextColor={theme.placeholder}
                 style={styles.input}
-                onChangeText={handleChange("email")}
-                onBlur={handleBlur("email")}
-                value={values.email}
-                keyboardType="email-address"
+                onChangeText={handleChange("username")}
+                onBlur={handleBlur("username")}
+                value={values.username}
                 autoCapitalize="none"
               />
-              {touched.email && errors.email && (
-                <Text style={styles.errorText}>{errors.email}</Text>
+              {touched.username && errors.username && (
+                <Text style={styles.errorText}>{errors.username}</Text>
               )}
 
               <TextInput
