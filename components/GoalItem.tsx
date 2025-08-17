@@ -26,7 +26,6 @@ const GoalItem = ({
     <View style={[styles.wrapper, { backgroundColor: theme.surface }]}>
       <TouchableOpacity
         onPress={() => {
-          console.log(goal.id);
           onToggle(goal.id);
         }}
       >

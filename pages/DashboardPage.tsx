@@ -5,24 +5,29 @@ import { Goal } from "../hooks/types";
 import UserInfoCard from "../components/dashboard/UserInfoCard";
 import RecentlyCreatedGoals from "../components/dashboard/RecentlyCreatedGoals";
 import GoalService from "../services/GoalService";
-import UserService from "../services/UserService";
 import GoalsPieChart from "../components/dashboard/GoalsPieChart";
 
-const DashboardPage = () => {
-  const { theme } = useTheme();
+interface props {
+  refresh: number;
+}
+
+const DashboardPage = ({ refresh }: props) => {
   const [goals, setGoals] = useState<Goal[]>([]);
   const [completedGoals, setCompletedGoals] = useState<number>(0);
+  const { theme } = useTheme();
 
   useEffect(() => {
-    (async () => {
+    async function fetchData() {
       const [goalsData, completedGoalsCount] = await Promise.all([
         GoalService.getAllGoals(),
         GoalService.getCompletedGoalsCount(),
       ]);
       setGoals(goalsData);
       setCompletedGoals(completedGoalsCount ?? 0);
-    })();
-  }, []);
+    }
+
+    fetchData();
+  }, [refresh]);
 
   return (
     <ScrollView style={{ backgroundColor: theme.background, padding: 16 }}>

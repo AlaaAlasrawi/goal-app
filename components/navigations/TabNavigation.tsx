@@ -1,4 +1,4 @@
-import React from "react";
+import React, { useState } from "react";
 import { createBottomTabNavigator } from "@react-navigation/bottom-tabs";
 import { MaterialCommunityIcons } from "@expo/vector-icons";
 
@@ -12,6 +12,8 @@ import GoalsPage from "../../pages/GoalsPage";
 const Tab = createBottomTabNavigator<TabRoutes>();
 
 const TabNavigation = () => {
+  const [refresh, setRefresh] = useState(0);
+
   const { theme } = useTheme();
   const icons: Record<
     keyof TabRoutes,
@@ -47,8 +49,13 @@ const TabNavigation = () => {
       })}
     >
       <Tab.Screen name="Home" component={HomePage} />
-      <Tab.Screen name="Goals" component={GoalsPage} />
-      <Tab.Screen name="Dashboard" component={DashboardPage} />
+      <Tab.Screen name="Goals">
+        {() => <GoalsPage refresh={refresh} setRefresh={setRefresh} />}
+      </Tab.Screen>
+      <Tab.Screen name="Dashboard">
+        {() => <DashboardPage refresh={refresh} />}
+      </Tab.Screen>
+
       <Tab.Screen name="Setting" component={SettingPage} />
     </Tab.Navigator>
   );

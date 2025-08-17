@@ -24,10 +24,15 @@ type Theme = {
   onPrimary?: string;
 };
 
-function GoalsPage(): JSX.Element {
+interface props {
+  refresh: number;
+  setRefresh: (state: any) => void;
+}
+
+function GoalsPage({ refresh, setRefresh }: props): JSX.Element {
   const [goals, setGoals] = useState<Goal[]>([]);
   const [modalVisible, setModalVisible] = useState(false);
-  const [refresh, setRefresh] = useState(0);
+
   const { theme } = useTheme() as { theme: Theme };
   const styles = useMemo(() => createStyles(theme), [theme]);
 
@@ -49,14 +54,7 @@ function GoalsPage(): JSX.Element {
     },
   });
 
-  useEffect(() => {
-    console.log("Formik values:", formik.values);
-    console.log("Formik errors:", formik.errors);
-    console.log("Formik touched:", formik.touched);
-    console.log("isSubmitting:", formik.isSubmitting);
-    console.log("isValid:", formik.isValid);
-    console.log("submitCount:", formik.submitCount);
-  }, [
+  useEffect(() => {}, [
     formik.values,
     formik.errors,
     formik.touched,
@@ -76,12 +74,12 @@ function GoalsPage(): JSX.Element {
       createdAt: new Date().toISOString(),
     };
     await GoalService.addGoal(newGoal);
-    setRefresh((p) => p + 1);
+    setRefresh((p: number) => p + 1);
   }
 
   async function toggleGoal(id: number): Promise<void> {
     await GoalService.toggleGoal(id);
-    setRefresh((p) => p + 1);
+    setRefresh((p: number) => p + 1);
   }
 
   function deleteGoal(id: number): void {
@@ -92,7 +90,7 @@ function GoalsPage(): JSX.Element {
         style: "destructive",
         onPress: async () => {
           await GoalService.deleteGoal(id);
-          setRefresh((p) => p + 1);
+          setRefresh((p: number) => p + 1);
         },
       },
     ]);
@@ -100,7 +98,7 @@ function GoalsPage(): JSX.Element {
 
   async function updateGoal(id: number, updated: Goal): Promise<void> {
     await GoalService.updateGoal(id, updated);
-    setRefresh((p) => p + 1);
+    setRefresh((p: number) => p + 1);
   }
 
   function renderGoal({ item }: { item: Goal }): JSX.Element {

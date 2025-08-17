@@ -7,7 +7,6 @@ import { useTheme } from "../../hooks/ThemeContext";
 import TabNavigation from "../navigations/TabNavigation";
 import LoginPage from "../../pages/LoginPage";
 import { RootStackParamList } from "../../hooks/types";
-import { TOKEN_KEY } from "../../api/env";
 import { useAuth } from "../../hooks/AuthProvider";
 
 const RootStack = createNativeStackNavigator<RootStackParamList>();
