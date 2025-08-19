@@ -1,9 +1,8 @@
 import React from "react";
 import { PaperProvider } from "react-native-paper";
-
-import { ThemeProvider } from "../../hooks/ThemeContext";
 import NavigationWrapper from "./NavigationWrapper";
-import { AuthProvider } from "../../hooks/AuthProvider";
+import { AuthProvider } from "../hooks/AuthProvider";
+import { ThemeProvider } from "../hooks/ThemeContext";
 
 const InnerWrapper = () => {
   return (

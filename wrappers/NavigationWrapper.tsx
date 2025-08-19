@@ -1,21 +1,22 @@
-import React, { useEffect, useState } from "react";
+import React from "react";
 import { NavigationContainer, CommonActions } from "@react-navigation/native";
 import { createNativeStackNavigator } from "@react-navigation/native-stack";
-import AsyncStorage from "@react-native-async-storage/async-storage";
 import { StatusBar } from "expo-status-bar";
-import { useTheme } from "../../hooks/ThemeContext";
-import TabNavigation from "../navigations/TabNavigation";
-import LoginPage from "../../pages/LoginPage";
-import { RootStackParamList } from "../../hooks/types";
-import { useAuth } from "../../hooks/AuthProvider";
+import LoginPage from "../pages/LoginPage";
+import { AuthRoutes, RootStackParamList } from "../hooks/types";
+import TabNavigation from "../components/navigations/TabNavigation";
+import { useTheme } from "../hooks/ThemeContext";
+import { useAuth } from "../hooks/AuthProvider";
+import SignUpPage from "../pages/SignUpPage";
 
 const RootStack = createNativeStackNavigator<RootStackParamList>();
-const AuthStack = createNativeStackNavigator();
+const AuthStack = createNativeStackNavigator<AuthRoutes>();
 const AppStack = createNativeStackNavigator();
 
 const AuthNavigator = () => (
   <AuthStack.Navigator screenOptions={{ headerShown: false }}>
     <AuthStack.Screen name="Login" component={LoginPage} />
+    <AuthStack.Screen name="SignUp" component={SignUpPage} />
     {/* Signup, ForgotPassword, etc. */}
   </AuthStack.Navigator>
 );

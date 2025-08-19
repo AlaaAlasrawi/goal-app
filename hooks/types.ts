@@ -33,9 +33,21 @@ export type RootStackParamList = {
   Auth: undefined;
 };
 
+export type AuthRoutes = {
+  Login: undefined;
+  SignUp: undefined;
+};
+
 export type AuthCtx = {
   checked: boolean;
   isAuthed: boolean;
   signIn(): Promise<void>;
   signOut(): Promise<void>;
+};
+
+export type AppUserSignUp = {
+  username: string;
+  fullName: string;
+  email: string;
+  password: string;
 };

@@ -1,5 +1,5 @@
 import React from "react";
-import InnerWrapper from "./components/wrappers/InnerWrapper";
+import InnerWrapper from "./wrappers/InnerWrapper";
 
 export default function App() {
   return <InnerWrapper />;

@@ -18,22 +18,31 @@ const DashboardPage = ({ refresh }: props) => {
 
   useEffect(() => {
     async function fetchData() {
-      const [goalsData, completedGoalsCount] = await Promise.all([
-        GoalService.getAllGoals(),
-        GoalService.getCompletedGoalsCount(),
-      ]);
-      setGoals(goalsData);
-      setCompletedGoals(completedGoalsCount ?? 0);
-    }
+      try {
+        const [goalsData, completedGoalsCount] = await Promise.all([
+          GoalService.getAllGoals(),
+          GoalService.getCompletedGoalsCount(),
+        ]);
 
+        setGoals(Array.isArray(goalsData) ? goalsData : []);
+        setCompletedGoals(
+          typeof completedGoalsCount === "number" ? completedGoalsCount : 0
+        );
+      } catch (e) {
+        // If either call throws, fail safe
+        setGoals([]);
+        setCompletedGoals(0);
+        console.warn("Dashboard fetch failed:", e);
+      }
+    }
     fetchData();
   }, [refresh]);
 
   return (
     <ScrollView style={{ backgroundColor: theme.background, padding: 16 }}>
       <UserInfoCard
-        totalGoals={goals.length}
-        completedGoals={completedGoals}
+        totalGoals={Array.isArray(goals) ? goals.length : 0}
+        completedGoals={completedGoals ?? 0}
         streaks={3}
       />
       <GoalsPieChart completed={completedGoals} total={goals.length} />

@@ -28,9 +28,11 @@ class GoalService {
       });
 
       const response = await promise.json();
+
       return response.content;
     } catch (error) {
       console.log(error);
+      console.log("fails to get ALL goals");
       return [];
     }
   }
