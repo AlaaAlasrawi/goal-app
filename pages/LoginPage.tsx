@@ -7,6 +7,7 @@ import {
   StyleSheet,
   KeyboardAvoidingView,
   Platform,
+  Alert,
 } from "react-native";
 import { Formik } from "formik";
 import * as Yup from "yup";
@@ -17,6 +18,8 @@ import { useNavigation } from "@react-navigation/native";
 import { AuthRoutes } from "../hooks/types";
 import { useAuth } from "../hooks/AuthProvider";
 import { NativeStackNavigationProp } from "@react-navigation/native-stack";
+import AsyncStorage from "@react-native-async-storage/async-storage";
+import { TOKEN_KEY } from "../api/env";
 
 const LoginPage = () => {
   const { theme } = useTheme();
@@ -35,12 +38,34 @@ const LoginPage = () => {
   }) => {
     console.log("Login with:", values);
 
-    const token = await AuthenticationService.login(
-      values.username,
-      values.password
-    );
+    try {
+      const token = await AuthenticationService.login(
+        values.username,
+        values.password
+      );
 
-    signIn();
+      if (!token) {
+        Alert.alert(
+          "Login failed",
+          "Invalid username or password. Please try again.",
+          [
+            { text: "Cancel", style: "cancel" },
+            { text: "Try again" }, // just closes the dialog
+          ]
+        );
+        return;
+      }
+
+      await AsyncStorage.setItem(TOKEN_KEY, token);
+      await signIn();
+    } catch (e) {
+      console.error("Failed to login/store token", e);
+      Alert.alert(
+        "Connection problem",
+        "We couldn’t reach the server. Check your internet and try again.",
+        [{ text: "OK" }]
+      );
+    }
   };
 
   return (

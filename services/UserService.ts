@@ -17,6 +17,7 @@ class UserService {
     }
 
     const data = (await res.json()) as AppUser;
+
     return data;
   }
 }
