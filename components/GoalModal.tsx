@@ -1,4 +1,3 @@
-// GoalModal.tsx
 import React from "react";
 import { Modal, View, Text, TouchableOpacity, StyleSheet } from "react-native";
 import DateTimePicker from "@react-native-community/datetimepicker";
@@ -128,7 +127,7 @@ const GoalModal = ({
             <Text style={styles.dateText}>
               {parsedDate
                 ? `Due: ${parsedDate.toLocaleString()}`
-                : "Pick Due Date (optional)"}
+                : "Pick Due Date"}
             </Text>
           </TouchableOpacity>
           {formik.touched.dueDate && formik.errors.dueDate ? (

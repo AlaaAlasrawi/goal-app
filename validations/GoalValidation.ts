@@ -8,11 +8,13 @@ export const GoalValidation = Yup.object({
     .required("Title is required"),
 
   description: Yup.string()
+    .nullable()
     .trim()
     .max(500, "Description must be at most 500 characters")
     .optional(),
 
   category: Yup.string()
+    .nullable()
     .trim()
     .max(50, "Category must be at most 50 characters")
     .optional()

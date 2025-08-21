@@ -5,6 +5,7 @@ import { Goal, GoalFormValues } from "../hooks/types";
 import GoalModal from "./GoalModal";
 
 interface GoalItemProps {
+  id: number;
   goal: Goal;
   theme: any;
   onToggle: (id: number) => void;
@@ -13,6 +14,7 @@ interface GoalItemProps {
 }
 
 const GoalItem = ({
+  id,
   goal,
   theme,
   onToggle,
@@ -78,7 +80,7 @@ const GoalItem = ({
           dueDate: goal.dueDate,
         }}
         onSubmit={async (values) => {
-          await onEdit(goal.id, { ...goal, ...values });
+          onEdit(id, { ...goal, ...values });
           setEditOpen(false);
         }}
       />

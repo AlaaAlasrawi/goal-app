@@ -36,8 +36,6 @@ const LoginPage = () => {
     username: string;
     password: string;
   }) => {
-    console.log("Login with:", values);
-
     try {
       const token = await AuthenticationService.login(
         values.username,
@@ -48,10 +46,7 @@ const LoginPage = () => {
         Alert.alert(
           "Login failed",
           "Invalid username or password. Please try again.",
-          [
-            { text: "Cancel", style: "cancel" },
-            { text: "Try again" }, // just closes the dialog
-          ]
+          [{ text: "Cancel", style: "cancel" }, { text: "Try again" }]
         );
         return;
       }

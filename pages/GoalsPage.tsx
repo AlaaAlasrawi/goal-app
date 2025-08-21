@@ -104,6 +104,7 @@ function GoalsPage({ refresh, setRefresh }: props): JSX.Element {
   function renderGoal({ item }: { item: Goal }): JSX.Element {
     return (
       <GoalItem
+        id={item.id}
         goal={item}
         theme={theme}
         onToggle={toggleGoal}
